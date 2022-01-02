@@ -8,6 +8,9 @@ concise area of concern.
 
 ## Roles
 
+- [`roles/restic-s3`](roles/restic-s3/README.md): Manage backups using restic
+  and persist them to an s3-compatible backend.
+
 ## License
 
 [CNPLv7+](LICENSE.md): Cooperative Nonviolent Public License
