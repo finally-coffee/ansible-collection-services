@@ -1,0 +1,100 @@
+---
+
+- name: Create gitea user
+  user:
+    name: "{{ gitea_user }}"
+    state: present
+    system: no
+  register: gitea_user_res
+
+- name: Ensure host directories exist
+  file:
+    path: "{{ item }}"
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+    state: directory
+  loop:
+    - "{{ gitea_base_path }}"
+    - "{{ gitea_data_path }}"
+
+- name: Ensure .ssh folder for gitea user exists
+  file:
+    path: "/home/{{ gitea_user }}/.ssh"
+    state: directory
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+    mode: 0700
+
+- name: Generate SSH keypair for host<>container
+  community.crypto.openssh_keypair:
+    path: "/home/{{ gitea_user }}/.ssh/id_ssh_ed25519"
+    type: ed25519
+    state: present
+    comment: "Gitea:Host2Container"
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+    mode: 0600
+  register: gitea_user_ssh_key
+
+- name: Create directory to place forwarding script into
+  file:
+    path: "/app/gitea"
+    state: directory
+    mode: 0770
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+
+- name: Create forwarding script
+  copy:
+    dest: "/app/gitea/gitea"
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+    mode: 0700
+    content: |
+      ssh -p {{ gitea_public_ssh_server_port }} -o StrictHostKeyChecking=no {{ gitea_user }}@127.0.0.1 -i /home/{{ gitea_user }}/.ssh/id_ssh_ed25519 "SSH_ORIGINAL_COMMAND=\"$SSH_ORIGINAL_COMMAND\" $0 $@"
+
+- name: Add host pubkey to git users authorized_keys file
+  lineinfile:
+    path: "/home/{{ gitea_user }}/.ssh/authorized_keys"
+    line: "{{ gitea_user_ssh_key.public_key }} Gitea:Host2Container"
+    state: present
+    create: yes
+    owner: "{{ gitea_user_res.uid }}"
+    group: "{{ gitea_user_res.group }}"
+    mode: 0600
+
+- name: Ensure gitea container image is present
+  docker_image:
+    name: "{{ gitea_container_image }}"
+    state: present
+    source: pull
+    force_source: "{{ gitea_container_image.endswith(':latest') }}"
+
+- name: Ensure container '{{ gitea_container_name }}' with gitea is running
+  docker_container:
+    name: "{{ gitea_container_name }}"
+    image: "{{ gitea_container_image }}"
+    env: "{{ gitea_container_env }}"
+    volumes: "{{ gitea_container_volumes }}"
+    networks: "{{ gitea_container_networks | default(omit, True) }}"
+    purge_networks: "{{ gitea_container_purge_networks | default(omit, True) }}"
+    published_ports: "{{ gitea_container_ports }}"
+    restart_policy: "{{ gitea_container_restart_policy }}"
+    state: started
+
+- name: Ensure given configuration is set in the config file
+  ini_file:
+    path: "{{ gitea_data_path }}/gitea/conf/app.ini"
+    section: "{{ section }}"
+    option: "{{ option }}"
+    value: "{{ entry.value }}"
+    state: "{{ 'present' if (entry.value is not none) else 'absent' }}"
+  loop: "{{ lookup('ansible.utils.to_paths', gitea_config) | dict2items }}"
+  loop_control:
+    loop_var: entry
+    label: "{{ section | default('/', True) }}->{{ option }}"
+  vars:
+    key_split: "{{ entry.key | split('.') }}"
+    # sections can be named `section_name`.`sub_section`, f.ex.: `repository.upload`
+    section: "{{ '' if key_split|length == 1 else (key_split[:-1] | join('.')) }}"
+    option: "{{ key_split | first if key_split|length == 1 else key_split | last }}"

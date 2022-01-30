@@ -1,0 +1,34 @@
+---
+
+gitea_container_volumes: "{{ gitea_container_base_volumes + gitea_container_extra_volumes }}"
+
+gitea_container_labels: "{{ gitea_container_base_labels | combine(gitea_container_extra_labels) }}"
+
+gitea_container_env: "{{ gitea_container_base_env | combine(gitea_container_extra_env) }}"
+
+gitea_container_ports: "{{ gitea_container_base_ports + gitea_container_extra_ports }}"
+
+
+gitea_container_port_webui: 3000
+gitea_container_port_ssh: 22
+
+gitea_config_base:
+  RUN_MODE: prod
+  RUN_USER: "{{ gitea_user }}"
+  server:
+    SSH_DOMAIN: "{{ gitea_domain }}"
+    DOMAIN: "{{ gitea_domain }}"
+    HTTP_PORT: "{{ gitea_container_port_webui }}"
+    DISABLE_SSH: false
+    START_SSH_SERVER: false
+  mailer:
+    ENABLED: "{{ gitea_config_mailer_enabled }}"
+    MAILER_TYP: "{{ gitea_config_mailer_type }}"
+    HOST: "{{ gitea_config_mailer_host }}"
+    USER: "{{ gitea_config_mailer_user }}"
+    PASSWD: "{{ gitea_config_mailer_passwd }}"
+    IS_TLS_ENABLED: "{{ gitea_config_mailer_tls }}"
+    FROM: "{{ gitea_config_mailer_from_addr }}"
+    SENDMAIL_PATH: "{{ gitea_config_mailer_sendmail_path }}"
+  metrics:
+    ENABLED: "{{ gitea_config_metrics_enabled }}"
