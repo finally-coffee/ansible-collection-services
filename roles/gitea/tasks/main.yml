@@ -36,17 +36,9 @@
     mode: 0600
   register: gitea_user_ssh_key
 
-- name: Create directory to place forwarding script into
-  file:
-    path: "/app/gitea"
-    state: directory
-    mode: 0770
-    owner: "{{ gitea_user_res.uid }}"
-    group: "{{ gitea_user_res.group }}"
-
 - name: Create forwarding script
   copy:
-    dest: "/app/gitea/gitea"
+    dest: "/usr/local/bin/gitea"
     owner: "{{ gitea_user_res.uid }}"
     group: "{{ gitea_user_res.group }}"
     mode: 0700
