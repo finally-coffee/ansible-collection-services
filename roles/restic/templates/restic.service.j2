@@ -9,8 +9,10 @@ SyslogIdentifier={{ restic_systemd_syslog_identifier }}
 
 Environment=RESTIC_REPOSITORY={{ restic_repo_url }}
 Environment=RESTIC_PASSWORD={{ restic_repo_password }}
+{% if restic_s3_key_id and restic_s3_access_key %}
 Environment=AWS_ACCESS_KEY_ID={{ restic_s3_key_id }}
 Environment=AWS_SECRET_ACCESS_KEY={{ restic_s3_access_key }}
+{% endif %}
 
 ExecStartPre=-/bin/sh -c '/usr/bin/restic snapshots || /usr/bin/restic init'
 {% if restic_backup_stdin_command %}

@@ -1,14 +1,28 @@
-# `finallycoffee.services.restic-s3`
+# `finallycoffee.services.restic`
 
-Ansible role for backup up data using `restic` to an `s3`-compatible backend,
-utilizing `systemd` timers for scheduling
+Ansible role for backup up data using `restic`, utilizing `systemd` timers for scheduling.
 
 ## Overview
 
-The s3 repository and the credentials for it are specified in `restic_repo_url`,
-`restic_s3_key_id` and `restic_s3_access_key`. As restic encrypts the data before
-storing it, the `restic_repo_password` needs to be populated with a strong key,
-and saved accordingly as only this key can be used to decrypt the data for a restore!
+As restic encrypts the data before storing it, the `restic_repo_password` needs
+to be populated with a strong key, and saved accordingly as only this key can
+be used to decrypt the data for a restore!
+
+### Backends
+
+#### S3 Backend
+
+To use a `s3`-compatible backend like AWS buckets or minio, both `restic_s3_key_id`
+and `restic_s3_access_key` need to be populated, and the `restic_repo_url` has the
+format `s3:https://my.s3.endpoint:port/bucket-name`.
+
+#### SFTP Backend
+
+Using the `sftp` backend requires the configured `restic_user` to be able to
+authenticate to the configured SFTP-Server using password-less methods like
+publickey-authentication. The `restic_repo_url` then follows the format
+`sftp:{user}@{server}:/my-restic-repository` (or without leading `/` for relative
+paths to the `{user}`s home directory.
 
 ### Backing up data
 
