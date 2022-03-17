@@ -1,0 +1,29 @@
+---
+
+jellyfin_user: jellyfin
+
+jellyfin_base_path: /opt/jellyfin
+jellyfin_config_path: "{{ jellyfin_base_path }}/config"
+jellyfin_cache_path: "{{ jellyfin_base_path }}/cache"
+
+jellyfin_media_volumes: []
+
+jellyfin_container_name: jellyfin
+jellyfin_container_image_name: "docker.io/jellyfin/jellyfin"
+jellyfin_container_image_tag: "latest"
+jellyfin_container_image_ref: "{{ jellyfin_container_image_name }}:{{ jellyfin_container_image_tag }}"
+jellyfin_container_network_mode: host
+jellyfin_container_networks: ~
+jellyfin_container_volumes: "{{ jellyfin_container_base_volumes + jellyfin_media_volumes }}"
+jellyfin_container_restart_policy: "unless-stopped"
+
+jellyfin_host_directories:
+  - path: "{{ jellyfin_base_path }}"
+    mode: "0750"
+  - path: "{{ jellyfin_config_path }}"
+    mode: "0750"
+  - path: "{{ jellyfin_cache_path }}"
+    mode: "0750"
+
+jellyfin_uid: "{{ jellyfin_user_info.uid | default(jellyfin_user) }}"
+jellyfin_gid: "{{ jellyfin_user_info.group | default(jellyfin_user) }}"
