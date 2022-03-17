@@ -1,6 +1,6 @@
 ---
 
-gitea_version: "1.16.3"
+gitea_version: "1.16.4"
 gitea_user: git
 gitea_base_path: "/opt/gitea"
 gitea_data_path: "{{ gitea_base_path }}/data"
