@@ -8,6 +8,9 @@ concise area of concern.
 
 ## Roles
 
+- [`roles/gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
+  lightweight, self-hosted git service.
+
 - [`roles/restic`](roles/restic/README.md): Manage backups using restic
   and persist them to a configurable backend.
 
