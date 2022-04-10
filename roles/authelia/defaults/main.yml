@@ -1,0 +1,180 @@
+---
+
+authelia_version: 4.34.6
+authelia_user: authelia
+authelia_base_dir: /opt/authelia
+authelia_domain: authelia.example.org
+
+authelia_config_dir: "{{ authelia_base_dir }}/config"
+authelia_config_file: "{{ authelia_config_dir }}/config.yaml"
+authelia_data_dir: "{{ authelia_base_dir }}/data"
+authelia_sqlite_storage_file: "{{ authelia_data_dir }}/authelia.sqlite3"
+authelia_notification_storage_file: "{{ authelia_data_dir }}/notifications.txt"
+authelia_user_storage_file: "{{ authelia_data_dir }}/user_database.yml"
+
+authelia_container_name: authelia
+authelia_container_image_name: docker.io/authelia/authelia
+authelia_container_image_tag: ~
+authelia_container_image_ref: "{{ authelia_container_image_name }}:{{ authelia_container_image_tag | default(authelia_version, true) }}"
+authelia_container_image_force_pull: "{{ authelia_container_image_tag | default(false, True) }}"
+authelia_container_env:
+  PUID: "{{ authelia_run_user }}"
+  PGID: "{{ authelia_run_group }}"
+authelia_container_labels: >-2
+  {{ authelia_container_base_labels | combine(authelia_container_extra_labels) }}
+authelia_container_extra_labels: {}
+authelia_container_extra_volumes: []
+authelia_container_volumes: >-2
+  {{ authelia_container_base_volumes
+    + authelia_container_extra_volumes }}
+authelia_container_ports: ~
+authelia_container_networks: ~
+authelia_container_purge_networks: ~
+authelia_container_restart_policy: unless-stopped
+authelia_container_state: started
+
+authelia_container_listen_port: 9091
+authelia_tls_minimum_version: TLS1.2
+
+authelia_config_theme: auto
+authelia_config_jwt_secret: ~
+authelia_config_default_redirection_url: ~
+authelia_config_server_host: 0.0.0.0
+authelia_config_server_port: "{{ authelia_container_listen_port }}"
+authelia_config_server_path: ""
+authelia_config_server_read_buffer_size: 4096
+authelia_config_server_write_buffer_size: 4096
+authelia_config_server_enable_pprof: true
+authelia_config_server_enable_expvars: true
+authelia_config_server_disable_healthcheck:
+authelia_config_server_tls_key: ~
+authelia_config_server_tls_certificate: ~
+authelia_config_server_tls_client_certificates: []
+authelia_config_server_headers_csp_template: ~
+authelia_config_log_level: info
+authelia_config_log_format: json
+authelia_config_log_file_path: ~
+authelia_config_log_keep_stdout: false
+authelia_config_totp_disable: true
+authelia_config_totp_issuer: "{{ authelia_domain }}"
+authelia_config_totp_algorithm: sha1
+authelia_config_totp_digits: 6
+authelia_config_totp_period: 30
+authelia_config_totp_skew: 1
+authelia_config_totp_secret_size: 32
+authelia_config_webauthn_disable: true
+authelia_config_webauthn_timeout: 60s
+authelia_config_webauthn_display_name: "Authelia ({{ authelia_domain }})"
+authelia_config_webauthn_attestation_conveyance_preference: indirect
+authelia_config_webauthn_user_verification: preferred
+authelia_config_duo_api_hostname: ~
+authelia_config_duo_api_integration_key: ~
+authelia_config_duo_api_secret_key: ~
+authelia_config_duo_api_enable_self_enrollment: false
+authelia_config_ntp_address: "time.cloudflare.com:123"
+authelia_config_ntp_version: 4
+authelia_config_ntp_max_desync: 3s
+authelia_config_ntp_disable_startup_check: false
+authelia_config_ntp_disable_failure: false
+authelia_config_authentication_backend_disable_reset_password: false
+authelia_config_authentication_backend_refresh_interval: 5m
+authelia_config_authentication_backend_password_reset_custom_url: ~
+authelia_config_authentication_backend_ldap_implementation: custom
+authelia_config_authentication_backend_ldap_url: ldap://127.0.0.1:389
+authelia_config_authentication_backend_ldap_timeout: 5s
+authelia_config_authentication_backend_ldap_start_tls: false
+authelia_config_authentication_backend_ldap_tls_skip_verify: false
+authelia_config_authentication_backend_ldap_minimum_version: "{{ authelia_tls_minimum_version }}"
+authelia_config_authentication_backend_ldap_base_dn: ~
+authelia_config_authentication_backend_ldap_additional_users_dn: "ou=users"
+authelia_config_authentication_backend_ldap_users_filter: "(&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=inetOrgPerson))"
+authelia_config_authentication_backend_ldap_additional_groups_dn: "ou=groups"
+authelia_config_authentication_backend_ldap_groups_filter: "(member={dn})"
+authelia_config_authentication_backend_ldap_group_name_attribute: cn
+authelia_config_authentication_backend_ldap_username_attribute: uid
+authelia_config_authentication_backend_ldap_mail_attribute: mail
+authelia_config_authentication_backend_ldap_display_name_attribute: displayName
+authelia_config_authentication_backend_ldap_user: ~
+authelia_config_authentication_backend_ldap_password: ~
+authelia_config_authentication_backend_file_path: ~
+authelia_config_authentication_backend_file_password_algorithm: argon2id
+authelia_config_authentication_backend_file_password_iterations: 5
+authelia_config_authentication_backend_file_password_key_length: 32
+authelia_config_authentication_backend_file_password_salt_length: 16
+authelia_config_authentication_backend_file_password_memory: 1024
+authelia_config_authentication_backend_file_password_parallelism: 8
+authelia_config_password_policy_standard_enabled: false
+authelia_config_password_policy_standard_min_length: 12
+authelia_config_password_policy_standard_max_length: 0
+authelia_config_password_policy_standard_require_uppercase: true
+authelia_config_password_policy_standard_require_lowercase: true
+authelia_config_password_policy_standard_require_number: true
+authelia_config_password_policy_standard_require_special: false
+authelia_config_password_policy_zxcvbn_enabled: true
+authelia_config_access_control_default_policy: deny
+authelia_config_access_control_networks: []
+authelia_config_access_control_rules: []
+authelia_config_session_name: authelia_session
+authelia_config_session_domain: example.org
+authelia_config_session_same_site: lax
+authelia_config_session_secret: ~
+authelia_config_session_expiration: 1h
+authelia_config_session_inactivity: 5m
+authelia_config_session_remember_me_duration: 1M
+authelia_config_session_redis_host: "{{ authelia_redis_host }}"
+authelia_config_session_redis_port: "{{ authelia_redis_port }}"
+authelia_config_session_redis_username: "{{ authelia_redis_user }}"
+authelia_config_session_redis_password: "{{ authelia_redis_pass }}"
+authelia_config_session_redis_database_index: 0
+authelia_config_session_redis_maximum_active_connections: 8
+authelia_config_session_redis_minimum_idle_connections: 0
+authelia_config_session_redis_enable_tls: false
+authelia_config_session_redis_tls_server_name: ~
+authelia_config_session_redis_tls_skip_verify: false
+authelia_config_session_redis_tls_minimum_version: "{{ authelia_tls_minimum_version }}"
+authelia_config_regulation_max_retries: 3
+authelia_config_regulation_find_time: 2m
+authelia_config_regulation_ban_time: 5m
+authelia_config_storage_encryption_key: ~
+authelia_config_storage_local_path: ~
+authelia_config_storage_mysql_port: 3306
+authelia_config_storage_postgres_port: 5432
+authelia_config_storage_postgres_ssl_mode: disable
+authelia_config_storage_postgres_ssl_root_certificate: disable
+authelia_config_storage_postgres_ssl_certificate: disable
+authelia_config_storage_postgres_ssl_key: disable
+authelia_config_notifier_disable_startup_check: false
+authelia_config_notifier_filesystem_filename: ~
+authelia_config_notifier_smtp_host: "{{ authelia_smtp_host }}"
+authelia_config_notifier_smtp_port: "{{ authelia_stmp_port }}"
+authelia_config_notifier_smtp_username: "{{ authelia_smtp_user }}"
+authelia_config_notifier_smtp_password: "{{ authelia_smtp_pass }}"
+authelia_config_notifier_smtp_timeout: 5s
+authelia_config_notifier_smtp_sender: "Authelia on {{ authelia_domain }} <admin@{{ authelia_domain }}>"
+authelia_config_notifier_smtp_identifier: "{{ authelia_domain }}"
+authelia_config_notifier_smtp_subject: "[Authelia @ {{ authelia_domain }}] {title}"
+authelia_config_notifier_smtp_startup_check_address: false
+authelia_config_notifier_smtp_disable_require_tls: false
+authelia_config_notifier_smtp_disable_html_emails: false
+authelia_config_notifier_smtp_tls_skip_verify: false
+authelia_config_notifier_smtp_tls_minimum_version: "{{ authelia_tls_minimum_version }}"
+#authelia_config_identity_provider_
+
+authelia_database_type: ~
+authelia_database_host: ~
+authelia_database_user: authelia
+authelia_database_pass: ~
+authelia_database_name: authelia
+authelia_database_timeout: 5s
+
+authelia_smtp_host: ~
+authelia_stmp_port: 465
+authelia_stmp_user: authelia
+authelia_stmp_pass: ~
+
+authelia_redis_host: ~
+authelia_redis_port: 6379
+authelia_redis_user: ~
+authelia_redis_pass: ~
+
+authelia_extra_config: {}

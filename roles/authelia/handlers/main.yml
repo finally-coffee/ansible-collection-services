@@ -1,0 +1,8 @@
+---
+
+- name: Restart authelia container
+  docker_container:
+    name: "{{ authelia_container_name }}"
+    state: started
+    restart: yes
+  listen: restart-authelia
