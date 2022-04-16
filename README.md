@@ -8,6 +8,9 @@ concise area of concern.
 
 ## Roles
 
+- [`roles/authelia`](roles/authelia/README.md): Deploys an [authelia.com](https://www.authelia.com)
+  instance, an authentication provider with beta OIDC provider support.
+
 - [`roles/gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
   lightweight, self-hosted git service.
 
