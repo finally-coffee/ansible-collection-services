@@ -11,6 +11,10 @@ concise area of concern.
 - [`roles/authelia`](roles/authelia/README.md): Deploys an [authelia.com](https://www.authelia.com)
   instance, an authentication provider with beta OIDC provider support.
 
+- [`roles/elasticsearch`](roles/elasticsearch/README.md): Deploy [elasticsearch](https://www.docker.elastic.co/r/elasticsearch/elasticsearch-oss),
+  a popular (distributed) search and analytics engine, mostly known by it's
+  letter "E" in the ELK-stack.
+
 - [`roles/gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
   lightweight, self-hosted git service.
 
