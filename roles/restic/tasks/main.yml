@@ -44,14 +44,22 @@
 
 - name: Ensure systemd service file for '{{ restic_job_name }}' is templated
   template:
-    dest: "/etc/systemd/system/{{ restic_systemd_unit_naming_scheme }}.service"
-    src: restic.service.j2
+    dest: "/etc/systemd/system/{{ service.unit_name }}.service"
+    src: "{{ service.file }}"
     owner: root
     group: root
     mode: 0640
   notify:
     - reload-systemd
     - trigger-restic
+  loop:
+    - unit_name: "{{ restic_systemd_unit_naming_scheme }}"
+      file: restic.service.j2
+    - unit_name: "{{ restic_systemd_unit_naming_scheme }}-unlock"
+      file: restic-unlock.service.j2
+  loop_control:
+    loop_var: service
+    label: "{{ service.file }}"
 
 - name: Ensure systemd service file for '{{ restic_job_name }}' is templated
   template:
@@ -65,6 +73,11 @@
 
 - name: Flush handlers to ensure systemd knows about '{{ restic_job_name }}'
   meta: flush_handlers
+
+- name: Ensure systemd service for unlocking repository for '{{ restic_job_name }}' is enabled
+  systemd:
+    name: "{{ restic_systemd_unit_naming_scheme }}-unlock.service"
+    enabled: true
 
 - name: Ensure systemd timer for '{{ restic_job_name }}' is activated
   systemd:
