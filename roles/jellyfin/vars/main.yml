@@ -3,3 +3,6 @@
 jellyfin_container_base_volumes:
   - "{{ jellyfin_config_path }}:/config:z"
   - "{{ jellyfin_cache_path }}:/cache:z"
+
+jellyfin_container_base_labels:
+  version: "{{ jellyfin_version }}"

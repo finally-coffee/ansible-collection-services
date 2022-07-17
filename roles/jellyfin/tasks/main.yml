@@ -21,13 +21,18 @@
     name: "{{ jellyfin_container_image_ref }}"
     state: present
     source: pull
-    force_source: "{{ jellyfin_container_image_tag in ['stable', 'unstable'] }}"
+    force_source: "{{ jellyfin_container_image_tag | default(false, true) }}"
+  register: jellyfin_container_image_pull_result
+  until: jellyfin_container_image_pull_result is succeeded
+  retries: 5
+  delay: 3
 
 - name: Ensure container '{{ jellyfin_container_name }}' is running
   docker_container:
     name: "{{ jellyfin_container_name }}"
     image: "{{ jellyfin_container_image_ref }}"
     user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
+    labels: "{{ jellyfin_container_labels }}"
     volumes: "{{ jellyfin_container_volumes }}"
     networks: "{{ jellyfin_container_networks | default(omit, True) }}"
     network_mode: "{{ jellyfin_container_network_mode }}"
