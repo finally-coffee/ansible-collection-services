@@ -21,6 +21,7 @@ authelia_top_level_config:
   theme: "{{ authelia_config_theme }}"
   jwt_secret: "{{ authelia_config_jwt_secret }}"
   log: "{{ authelia_config_log }}"
+  telemetry: "{{ authelia_config_telemetry }}"
   totp: "{{ authelia_config_totp }}"
   webauthn: "{{ authelia_config_webauthn }}"
   duo_api: "{{ authelia_config_duo_api }}"
@@ -72,6 +73,9 @@ authelia_config_log: >-2
     | combine({"keep_stdout": authelia_config_log_keep_stdout}
       if authelia_config_log_file_path | default(false, true) else {})
   }}
+authelia_config_telemetry:
+  enabled: "{{ authelia_config_telemetry_metrics_enabled }}"
+  address: "{{ authelia_config_telemetry_metrics_address }}"
 authelia_config_totp:
   disable: "{{ authelia_config_totp_disable }}"
   issuer: "{{ authelia_config_totp_issuer }}"

@@ -1,6 +1,6 @@
 ---
 
-authelia_version: 4.34.6
+authelia_version: 4.36.2
 authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
@@ -55,6 +55,8 @@ authelia_config_log_level: info
 authelia_config_log_format: json
 authelia_config_log_file_path: ~
 authelia_config_log_keep_stdout: false
+authelia_config_telemetry_metrics_enabled: false
+authelia_config_telemetry_metrics_address: '0.0.0.0:9959'
 authelia_config_totp_disable: true
 authelia_config_totp_issuer: "{{ authelia_domain }}"
 authelia_config_totp_algorithm: sha1
