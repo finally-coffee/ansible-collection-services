@@ -155,7 +155,7 @@ authelia_config_notifier_smtp_timeout: 5s
 authelia_config_notifier_smtp_sender: "Authelia on {{ authelia_domain }} <admin@{{ authelia_domain }}>"
 authelia_config_notifier_smtp_identifier: "{{ authelia_domain }}"
 authelia_config_notifier_smtp_subject: "[Authelia @ {{ authelia_domain }}] {title}"
-authelia_config_notifier_smtp_startup_check_address: false
+authelia_config_notifier_smtp_startup_check_address: "authelia-test@{{ authelia_domain }}"
 authelia_config_notifier_smtp_disable_require_tls: false
 authelia_config_notifier_smtp_disable_html_emails: false
 authelia_config_notifier_smtp_tls_skip_verify: false
