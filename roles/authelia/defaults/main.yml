@@ -78,8 +78,8 @@ authelia_config_ntp_version: 4
 authelia_config_ntp_max_desync: 3s
 authelia_config_ntp_disable_startup_check: false
 authelia_config_ntp_disable_failure: false
-authelia_config_authentication_backend_disable_reset_password: false
 authelia_config_authentication_backend_refresh_interval: 5m
+authelia_config_authentication_backend_password_reset_disable: false
 authelia_config_authentication_backend_password_reset_custom_url: ~
 authelia_config_authentication_backend_ldap_implementation: custom
 authelia_config_authentication_backend_ldap_url: ldap://127.0.0.1:389
