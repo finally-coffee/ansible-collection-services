@@ -74,8 +74,9 @@ authelia_config_log: >-2
       if authelia_config_log_file_path | default(false, true) else {})
   }}
 authelia_config_telemetry:
-  enabled: "{{ authelia_config_telemetry_metrics_enabled }}"
-  address: "{{ authelia_config_telemetry_metrics_address }}"
+  metrics:
+    enabled: "{{ authelia_config_telemetry_metrics_enabled }}"
+    address: "{{ authelia_config_telemetry_metrics_address }}"
 authelia_config_totp:
   disable: "{{ authelia_config_totp_disable }}"
   issuer: "{{ authelia_config_totp_issuer }}"
