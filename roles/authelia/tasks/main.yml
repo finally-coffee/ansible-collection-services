@@ -14,12 +14,15 @@
     owner: "{{ item.owner | default(authelia_user) }}"
     group: "{{ item.group | default(authelia_user) }}"
     mode: "{{ item.mode | default('0750') }}"
+  when: item.path | default(false, true) | bool
   loop:
     - path: "{{ authelia_base_dir }}"
       mode: "0755"
     - path: "{{ authelia_config_dir }}"
       mode: "0750"
     - path: "{{ authelia_data_dir }}"
+      mode: "0750"
+    - path: "{{ authelia_asset_dir }}"
       mode: "0750"
 
 - name: Ensure config file is generated

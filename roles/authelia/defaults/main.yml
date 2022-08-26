@@ -8,6 +8,7 @@ authelia_domain: authelia.example.org
 authelia_config_dir: "{{ authelia_base_dir }}/config"
 authelia_config_file: "{{ authelia_config_dir }}/config.yaml"
 authelia_data_dir: "{{ authelia_base_dir }}/data"
+authelia_asset_dir: "{{ authelia_base_dir }}/assets"
 authelia_sqlite_storage_file: "{{ authelia_data_dir }}/authelia.sqlite3"
 authelia_notification_storage_file: "{{ authelia_data_dir }}/notifications.txt"
 authelia_user_storage_file: "{{ authelia_data_dir }}/user_database.yml"
@@ -42,6 +43,7 @@ authelia_config_default_redirection_url: ~
 authelia_config_server_host: 0.0.0.0
 authelia_config_server_port: "{{ authelia_container_listen_port }}"
 authelia_config_server_path: ""
+authelia_config_server_asset_path: "/config/assets/"
 authelia_config_server_read_buffer_size: 4096
 authelia_config_server_write_buffer_size: 4096
 authelia_config_server_enable_pprof: true
