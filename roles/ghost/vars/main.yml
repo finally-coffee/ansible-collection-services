@@ -1,0 +1,10 @@
+---
+
+ghost_container_image: "{{ ghost_container_image_name}}:{{ ghost_container_image_tag | default(ghost_version, true) }}"
+ghost_container_labels: >-2
+  {{ ghost_container_base_labels
+  | combine(ghost_container_extra_labels) }}
+
+ghost_container_data_directory: "/var/lib/ghost/content"
+ghost_config_complete: >-2
+  {{ ghost_base_config | combine(ghost_config, recursive=True) }}

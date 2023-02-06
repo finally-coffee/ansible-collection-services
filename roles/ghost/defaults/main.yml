@@ -1,0 +1,38 @@
+---
+
+ghost_domain: ~
+ghost_version: "5.33.6"
+ghost_user: ghost
+ghost_user_group: ghost
+ghost_base_path: /opt/ghost
+ghost_data_path: "{{ ghost_base_path }}/data"
+ghost_config_path: "{{ ghost_base_path }}/config"
+ghost_config_file: "{{ ghost_config_path }}/ghost.env"
+ghost_database_username: ghost
+ghost_database_password: ~
+ghost_database_database: ghost
+ghost_database_host: ~
+ghost_base_config:
+  url: "https://{{ ghost_domain }}"
+  database__client: mysql
+  database__connection__host: "{{ ghost_database_host }}"
+  database__connection__user: "{{ ghost_database_username }}"
+  database__connection__password: "{{ ghost_database_password }}"
+  database__connection__database: "{{ ghost_database_database }}"
+ghost_config: {}
+
+ghost_container_name: ghost
+ghost_container_image_name: docker.io/ghost
+ghost_container_image_tag: ~
+ghost_container_base_volumes:
+  - "{{ ghost_data_path }}:{{ ghost_container_data_directory }}:rw"
+ghost_container_extra_volumes: []
+ghost_container_volumes:
+  "{{ ghost_container_base_volumes + ghost_container_extra_volumes }}"
+ghost_container_base_labels:
+  version: "{{ ghost_version }}"
+ghost_container_extra_labels: {}
+ghost_container_restart_policy: "unless-stopped"
+ghost_container_networks: ~
+ghost_container_purge_networks: ~
+ghost_container_etc_hosts: ~

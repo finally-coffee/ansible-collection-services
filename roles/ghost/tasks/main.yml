@@ -1,0 +1,56 @@
+---
+- name: Ensure ghost group is created
+  ansible.builtin.group:
+    name: "{{ ghost_user_group }}"
+    state: present
+    system: true
+
+- name: Ensure ghost user is created
+  ansible.builtin.user:
+    name: "{{ ghost_user }}"
+    groups:
+      - "{{ ghost_user_group }}"
+    append: true
+    state: present
+    system: true
+
+- name: Ensure host paths for docker volumes exist for ghost
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+    owner: "{{ ghost_user }}"
+    group: "{{ ghost_user_group }}"
+  loop:
+    - "{{ ghost_base_path }}"
+    - "{{ ghost_data_path }}"
+    - "{{ ghost_config_path }}"
+
+- name: Ensure ghost configuration file is templated
+  ansible.builtin.template:
+    src: "ghost.env.j2"
+    dest: "{{ ghost_config_file }}"
+    owner: "{{ ghost_user }}"
+    group: "{{ ghost_user_group }}"
+    mode: "0644"
+
+- name: Ensure ghost container image is present on host
+  community.docker.docker_image:
+    name: "{{ ghost_container_image }}"
+    state: present
+    source: pull
+    force_source: "{{ ghost_container_image_tag is defined }}"
+
+- name: Ensure ghost container is running
+  community.docker.docker_container:
+    name: "{{ ghost_container_name }}"
+    image: "{{ ghost_container_image }}"
+    ports: "{{ ghost_container_ports | default(omit, true) }}"
+    labels: "{{ ghost_container_labels }}"
+    volumes: "{{ ghost_container_volumes }}"
+    env_file: "{{ ghost_config_file }}"
+    etc_hosts: "{{ ghost_container_etc_hosts | default(omit, true) }}"
+    networks: "{{ ghost_container_networks | default(omit, true) }}"
+    purge_networks: "{{ ghost_container_purge_networks | default(omit, true) }}"
+    restart_policy: "{{ ghost_container_restart_policy }}"
+    state: started
