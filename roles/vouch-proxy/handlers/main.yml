@@ -1,0 +1,8 @@
+---
+
+- name: Ensure vouch-proxy was restarted
+  community.docker.docker_container:
+    name: "{{ vouch_proxy_container_name }}"
+    state: started
+    restart: yes
+  listen: restart-vouch-proxy

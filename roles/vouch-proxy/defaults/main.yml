@@ -1,0 +1,51 @@
+---
+
+vouch_proxy_user: vouch-proxy
+vouch_proxy_version: 0.39.0
+vouch_proxy_base_path: /opt/vouch-proxy
+vouch_proxy_config_path: "{{ vouch_proxy_base_path }}/config"
+vouch_proxy_config_file: "{{ vouch_proxy_config_path }}/config.yaml"
+
+vouch_proxy_container_name: vouch-proxy
+vouch_proxy_container_image_name: vouch-proxy
+vouch_proxy_container_image_namespace: vouch/
+vouch_proxy_container_image_registry: quay.io
+
+vouch_proxy_container_image_repository: >-
+  {{
+    (container_registries[vouch_proxy_container_image_registry] | default(vouch_proxy_container_image_registry))
+    + '/' + (vouch_proxy_container_image_namespace | default(''))
+    + vouch_proxy_container_image_name
+  }}
+vouch_proxy_container_image_reference: >-
+  {{
+    vouch_proxy_container_image_repository + ':'
+    + (vouch_proxy_container_image_tag | default(vouch_proxy_version))
+  }}
+
+vouch_proxy_container_image_force_pull: "{{ vouch_proxy_container_image_tag is defined }}"
+
+vouch_proxy_container_default_volumes:
+  - "{{ vouch_proxy_config_file }}:/config/config.yaml:ro"
+vouch_proxy_container_volumes: >-
+  {{ vouch_proxy_container_default_volumes
+     + vouch_proxy_container_extra_volumes | default([]) }}
+vouch_proxy_container_restart_policy: "unless-stopped"
+
+vouch_proxy_config_vouch_log_level: info
+vouch_proxy_config_vouch_listen: 0.0.0.0
+vouch_proxy_config_vouch_port: 9090
+vouch_proxy_config_vouch_domains: []
+vouch_proxy_config_vouch_document_root: ~
+
+vouch_proxy_oauth_config: {}
+vouch_proxy_vouch_config:
+  logLevel: "{{ vouch_proxy_config_vouch_log_level }}"
+  listen: "{{ vouch_proxy_config_vouch_listen }}"
+  port: "{{ vouch_proxy_config_vouch_port }}"
+  domains: "{{ vouch_proxy_config_vouch_domains }}"
+  document_root: "{{ vouch_proxy_config_vouch_document_root }}"
+
+vouch_proxy_config:
+  vouch: "{{ vouch_proxy_vouch_config }}"
+  oauth: "{{ vouch_proxy_oauth_config }}"
