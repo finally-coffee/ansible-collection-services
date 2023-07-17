@@ -3,13 +3,12 @@ name: services
 version: 0.0.1
 readme: README.md
 authors:
-- Johanna Dorothea Reichmann <transcaffeine@finallycoffee.eu>
+- transcaffeine <transcaffeine@finally.coffee>
 description: Various ansible roles useful for automating infrastructure
 dependencies:
   "community.docker": "^1.10.0"
-license:
-- CNPLv7+
+license_file: LICENSE.md
 build_ignore:
 - '*.tar.gz'
-repository: https://git.finallycoffee.eu/finallycoffee.eu/services
-issues: https://git.finallycoffee.eu/finallycoffee.eu/services/issues
+repository: https://git.finally.coffee/finallycoffee/services
+issues: https://git.finally.coffee/finallycoffee/services/issues
