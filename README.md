@@ -20,9 +20,6 @@ concise area of concern.
 - [`roles/restic`](roles/restic/README.md): Manage backups using restic
   and persist them to a configurable backend.
 
-- [`roles/minio`](roles/minio/README.md): Deploy [min.io](https://min.io), an
-  s3-compatible object storage server, using docker containers.
-
 ## License
 
 [CNPLv7+](LICENSE.md): Cooperative Nonviolent Public License
