@@ -14,7 +14,7 @@ gitea_container_port_ssh: 22
 
 gitea_config_base:
   RUN_MODE: prod
-  RUN_USER: "{{ gitea_user }}"
+  RUN_USER: "{{ gitea_run_user }}"
   server:
     SSH_DOMAIN: "{{ gitea_domain }}"
     DOMAIN: "{{ gitea_domain }}"

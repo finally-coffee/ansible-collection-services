@@ -2,6 +2,7 @@
 
 gitea_version: "1.20.5"
 gitea_user: git
+gitea_run_user: "{{ gitea_user }}"
 gitea_base_path: "/opt/gitea"
 gitea_data_path: "{{ gitea_base_path }}/data"
 
@@ -9,7 +10,7 @@ gitea_data_path: "{{ gitea_base_path }}/data"
 gitea_domain: ~
 
 # container config
-gitea_container_name: "git"
+gitea_container_name: "{{ gitea_user }}"
 gitea_container_image_name: "docker.io/gitea/gitea"
 gitea_container_image_tag: "{{ gitea_version }}"
 gitea_container_image: "{{ gitea_container_image_name }}:{{ gitea_container_image_tag }}"
@@ -17,9 +18,10 @@ gitea_container_networks: []
 gitea_container_purge_networks: ~
 gitea_container_restart_policy: "unless-stopped"
 gitea_container_extra_env: {}
-gitea_contianer_extra_labels: {}
+gitea_container_extra_labels: {}
 gitea_container_extra_ports: []
 gitea_container_extra_volumes: []
+gitea_container_state: started
 
 # container defaults
 gitea_container_base_volumes:

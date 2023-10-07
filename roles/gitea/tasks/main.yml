@@ -1,10 +1,11 @@
 ---
 
-- name: Create gitea user
+- name: Ensure gitea user '{{ gitea_user }}' is present
   user:
     name: "{{ gitea_user }}"
-    state: present
-    system: no
+    state: "present"
+    system: false
+    create_home: true
   register: gitea_user_res
 
 - name: Ensure host directories exist
@@ -43,7 +44,7 @@
     group: "{{ gitea_user_res.group }}"
     mode: 0700
     content: |
-      ssh -p {{ gitea_public_ssh_server_port }} -o StrictHostKeyChecking=no {{ gitea_user }}@127.0.0.1 -i /home/{{ gitea_user }}/.ssh/id_ssh_ed25519 "SSH_ORIGINAL_COMMAND=\"$SSH_ORIGINAL_COMMAND\" $0 $@"
+      ssh -p {{ gitea_public_ssh_server_port }} -o StrictHostKeyChecking=no {{ gitea_run_user }}@127.0.0.1 -i /home/{{ gitea_user }}/.ssh/id_ssh_ed25519 "SSH_ORIGINAL_COMMAND=\"$SSH_ORIGINAL_COMMAND\" $0 $@"
 
 - name: Add host pubkey to git users authorized_keys file
   lineinfile:
@@ -56,23 +57,24 @@
     mode: 0600
 
 - name: Ensure gitea container image is present
-  docker_image:
+  community.docker.docker_image:
     name: "{{ gitea_container_image }}"
     state: present
     source: pull
     force_source: "{{ gitea_container_image.endswith(':latest') }}"
 
-- name: Ensure container '{{ gitea_container_name }}' with gitea is running
-  docker_container:
+- name: Ensure container '{{ gitea_container_name }}' with gitea is {{ gitea_container_state }}
+  community.docker.docker_container:
     name: "{{ gitea_container_name }}"
     image: "{{ gitea_container_image }}"
     env: "{{ gitea_container_env }}"
+    labels: "{{ gitea_container_labels }}"
     volumes: "{{ gitea_container_volumes }}"
     networks: "{{ gitea_container_networks | default(omit, True) }}"
     purge_networks: "{{ gitea_container_purge_networks | default(omit, True) }}"
     published_ports: "{{ gitea_container_ports }}"
     restart_policy: "{{ gitea_container_restart_policy }}"
-    state: started
+    state: "{{ gitea_container_state }}"
 
 - name: Ensure given configuration is set in the config file
   ini_file:
