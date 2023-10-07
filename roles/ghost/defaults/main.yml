@@ -36,3 +36,4 @@ ghost_container_restart_policy: "unless-stopped"
 ghost_container_networks: ~
 ghost_container_purge_networks: ~
 ghost_container_etc_hosts: ~
+ghost_container_state: started

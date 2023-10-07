@@ -16,15 +16,16 @@
 
 - name: Ensure host paths for docker volumes exist for ghost
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ item.path }}"
     state: directory
     mode: "0750"
-    owner: "{{ ghost_user }}"
-    group: "{{ ghost_user_group }}"
+    owner: "{{ item.owner | default(ghost_user) }}"
+    group: "{{ item.group | default(ghost_user_group) }}"
   loop:
-    - "{{ ghost_base_path }}"
-    - "{{ ghost_data_path }}"
-    - "{{ ghost_config_path }}"
+    - path: "{{ ghost_base_path }}"
+    - path: "{{ ghost_data_path }}"
+      owner: "1000"
+    - path: "{{ ghost_config_path }}"
 
 - name: Ensure ghost configuration file is templated
   ansible.builtin.template:
@@ -41,7 +42,7 @@
     source: pull
     force_source: "{{ ghost_container_image_tag is defined }}"
 
-- name: Ensure ghost container is running
+- name: Ensure ghost container '{{ ghost_container_name }}' is {{ ghost_container_state }}
   community.docker.docker_container:
     name: "{{ ghost_container_name }}"
     image: "{{ ghost_container_image }}"
@@ -53,4 +54,4 @@
     networks: "{{ ghost_container_networks | default(omit, true) }}"
     purge_networks: "{{ ghost_container_purge_networks | default(omit, true) }}"
     restart_policy: "{{ ghost_container_restart_policy }}"
-    state: started
+    state: "{{ ghost_container_state }}"
