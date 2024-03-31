@@ -17,6 +17,8 @@ concise area of concern.
 - [`roles/jellyfin`](roles/jellyfin/README.md): Deploy [jellyfin.org](https://jellyfin.org),
   the free software media system for streaming stored media to any device.
 
+- [`roles/openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org) installation using the upstream provided docker-compose setup.
+
 ## License
 
 [CNPLv7+](LICENSE.md): Cooperative Nonviolent Public License

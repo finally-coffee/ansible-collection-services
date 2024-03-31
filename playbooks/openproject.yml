@@ -1,0 +1,6 @@
+---
+- name: Install openproject
+  hosts: "{{ openproject_hosts | default('openproject') }}"
+  become: "{{ openproject_become | default(true, false) }}"
+  roles:
+    - role: finallycoffee.services.openproject

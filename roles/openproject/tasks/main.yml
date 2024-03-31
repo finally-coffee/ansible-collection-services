@@ -1,0 +1,39 @@
+---
+- name: Ensure base directory '{{ openproject_base_path }}' is present
+  ansible.builtin.file:
+    path: "{{ openproject_base_path }}"
+    state: directory
+
+- name: Ensure upstream repository is cloned
+  ansible.builtin.git:
+    dest: "{{ openproject_base_path }}"
+    repo: "{{ openproject_upstream_git_url }}"
+    version: "{{ openproject_upstream_git_branch }}"
+    clone: true
+    depth: 1
+
+- name: Ensure environment is configured
+  ansible.builtin.lineinfile:
+    line: "{{ item.key}}={{ item.value}}"
+    path: "{{ openproject_compose_project_env_file }}"
+    state: present
+    create: true
+  loop: "{{ openproject_compose_project_env | dict2items(key_name='key', value_name='value') }}"
+
+- name: Ensure docker compose overrides are set
+  ansible.builtin.copy:
+    dest: "{{ openproject_compose_project_override_file }}"
+    content: "{{ openproject_compose_overrides | default({}) | to_nice_yaml }}"
+
+- name: Ensure containers are pulled
+  community.docker.docker_compose:
+    project_src: "{{ openproject_compose_project_path }}"
+    project_name: "{{ openproject_compose_project_name }}"
+    pull: true
+
+- name: Ensure services are running
+  community.docker.docker_compose:
+    project_src: "{{ openproject_compose_project_path }}"
+    project_name: "{{ openproject_compose_project_name }}"
+    state: "present"
+    build: false
