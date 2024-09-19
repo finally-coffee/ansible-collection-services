@@ -1,6 +1,6 @@
 ---
 
-gitea_version: "1.21.5"
+gitea_version: "1.22.2"
 gitea_user: git
 gitea_run_user: "{{ gitea_user }}"
 gitea_base_path: "/opt/gitea"
@@ -42,10 +42,10 @@ gitea_container_base_labels:
 gitea_config_mailer_enabled: false
 gitea_config_mailer_type: ~
 gitea_config_mailer_from_addr: ~
-gitea_config_mailer_host: ~
+gitea_config_mailer_smtp_addr: ~
 gitea_config_mailer_user: ~
 gitea_config_mailer_passwd: ~
-gitea_config_mailer_tls: ~
+gitea_config_mailer_protocol: ~
 gitea_config_mailer_sendmail_path: ~
 gitea_config_metrics_enabled: false
 

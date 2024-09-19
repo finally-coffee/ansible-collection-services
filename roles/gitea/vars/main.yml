@@ -24,11 +24,11 @@ gitea_config_base:
   mailer:
     ENABLED: "{{ gitea_config_mailer_enabled }}"
     MAILER_TYP: "{{ gitea_config_mailer_type }}"
-    HOST: "{{ gitea_config_mailer_host }}"
+    SMTP_ADDR: "{{ gitea_config_mailer_smtp_addr }}"
     USER: "{{ gitea_config_mailer_user }}"
     PASSWD: "{{ gitea_config_mailer_passwd }}"
-    IS_TLS_ENABLED: "{{ gitea_config_mailer_tls }}"
-    FROM: "{{ gitea_config_mailer_from_addr }}"
+    PROTOCOL: "{{ gitea_config_mailer_protocol }}"
+    FROM: "{{ gitea_config_mailer_from }}"
     SENDMAIL_PATH: "{{ gitea_config_mailer_sendmail_path }}"
   metrics:
     ENABLED: "{{ gitea_config_metrics_enabled }}"
