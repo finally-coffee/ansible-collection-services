@@ -1,7 +1,7 @@
 ---
 
 vouch_proxy_user: vouch-proxy
-vouch_proxy_version: 0.39.0
+vouch_proxy_version: 0.40.0
 vouch_proxy_base_path: /opt/vouch-proxy
 vouch_proxy_config_path: "{{ vouch_proxy_base_path }}/config"
 vouch_proxy_config_file: "{{ vouch_proxy_config_path }}/config.yaml"
