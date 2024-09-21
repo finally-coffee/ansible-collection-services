@@ -8,16 +8,23 @@ concise area of concern.
 
 ## Roles
 
-- [`roles/authelia`](roles/authelia/README.md): Deploys an [authelia.com](https://www.authelia.com)
+- [`authelia`](roles/authelia/README.md): Deploys an [authelia.com](https://www.authelia.com)
   instance, an authentication provider with beta OIDC provider support.
 
-- [`roles/gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
+- [`ghost`](roles/ghost/README.md): Deploys [ghost.org](https://ghost.org/), a simple to use
+  blogging and publishing platform.
+
+- [`gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
   lightweight, self-hosted git service.
 
-- [`roles/jellyfin`](roles/jellyfin/README.md): Deploy [jellyfin.org](https://jellyfin.org),
+- [`jellyfin`](roles/jellyfin/README.md): Deploy [jellyfin.org](https://jellyfin.org),
   the free software media system for streaming stored media to any device.
 
-- [`roles/openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org) installation using the upstream provided docker-compose setup.
+- [`openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org)
+  installation using the upstream provided docker-compose setup.
+
+- [`vouch_proxy`](roles/vouch_proxy/README.md): Deploys [vouch-proxy](https://github.com/vouch/vouch-proxy),
+  an authorization proxy for arbitrary webapps working with `nginx`s' `auth_request` module.
 
 ## License
 
