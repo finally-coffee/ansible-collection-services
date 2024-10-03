@@ -14,9 +14,20 @@ authelia_notification_storage_file: "{{ authelia_data_dir }}/notifications.txt"
 authelia_user_storage_file: "{{ authelia_data_dir }}/user_database.yml"
 
 authelia_container_name: authelia
-authelia_container_image_name: docker.io/authelia/authelia
+authelia_container_image_server: docker.io
+authelia_container_image_namespace: authelia
+authelia_container_image_name: authelia
+authelia_container_image: >-2
+  {{
+    [
+      authelia_container_image_server,
+      authelia_container_image_namespace,
+      authelia_container_image_name
+    ] | join('/')
+  }}
 authelia_container_image_tag: ~
-authelia_container_image_ref: "{{ authelia_container_image_name }}:{{ authelia_container_image_tag | default(authelia_version, true) }}"
+authelia_container_image_ref: >-2
+  {{ authelia_container_image }}:{{ authelia_container_image_tag | default(authelia_version, true) }}
 authelia_container_image_force_pull: "{{ authelia_container_image_tag | default(false, True) }}"
 authelia_container_env:
   PUID: "{{ authelia_run_user }}"
