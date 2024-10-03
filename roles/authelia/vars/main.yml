@@ -130,10 +130,11 @@ authelia_config_authentication_backend_ldap:
   additional_groups_dn: "{{ authelia_config_authentication_backend_ldap_additional_groups_dn }}" 
   users_filter: "{{ authelia_config_authentication_backend_ldap_users_filter }}" 
   groups_filter: "{{ authelia_config_authentication_backend_ldap_groups_filter }}"
-  group_name_attribute: "{{ authelia_config_authentication_backend_ldap_group_name_attribute }}"
-  username_attribute: "{{ authelia_config_authentication_backend_ldap_username_attribute }}"
-  mail_attribute: "{{ authelia_config_authentication_backend_ldap_mail_attribute }}"
-  display_name_attribute: "{{ authelia_config_authentication_backend_ldap_display_name_attribute }}"
+  attributes:
+    username: "{{ authelia_config_authentication_backend_ldap_attributes_username }}"
+    mail: "{{ authelia_config_authentication_backend_ldap_attributes_mail }}"
+    display_name: "{{ authelia_config_authentication_backend_ldap_attributes_display_name }}"
+    group_name: "{{ authelia_config_authentication_backend_ldap_attributes_group_name }}"
   user: "{{ authelia_config_authentication_backend_ldap_user }}"
   password: "{{ authelia_config_authentication_backend_ldap_password }}"
 authelia_config_authentication_backend_file:

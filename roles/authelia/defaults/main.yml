@@ -107,10 +107,18 @@ authelia_config_authentication_backend_ldap_additional_users_dn: "ou=users"
 authelia_config_authentication_backend_ldap_users_filter: "(&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=inetOrgPerson))"
 authelia_config_authentication_backend_ldap_additional_groups_dn: "ou=groups"
 authelia_config_authentication_backend_ldap_groups_filter: "(member={dn})"
+authelia_config_authentication_backend_ldap_attributes_username: uid
+authelia_config_authentication_backend_ldap_username_attribute: >-2
+  {{ authelia_config_authentication_backend_ldap_attributes_username }}
+authelia_config_authentication_backend_ldap_attributes_mail: mail
+authelia_config_authentication_backend_ldap_mail_attribute: >-2
+  {{ authelia_config_authentication_backend_ldap_attributes_mail }}
+authelia_config_authentication_backend_ldap_attributes_display_name: displayName
+authelia_config_authentication_backend_ldap_display_name_attribute: >-2
+  {{ authelia_config_authentication_backend_ldap_attributes_display_name }}
 authelia_config_authentication_backend_ldap_group_name_attribute: cn
-authelia_config_authentication_backend_ldap_username_attribute: uid
-authelia_config_authentication_backend_ldap_mail_attribute: mail
-authelia_config_authentication_backend_ldap_display_name_attribute: displayName
+authelia_config_authentication_backend_ldap_attributes_group_name: >-2
+  {{ authelia_config_authentication_backend_ldap_group_name_attribute }}
 authelia_config_authentication_backend_ldap_user: ~
 authelia_config_authentication_backend_ldap_password: ~
 authelia_config_authentication_backend_file_path: ~
