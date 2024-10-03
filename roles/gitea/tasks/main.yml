@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure gitea user '{{ gitea_user }}' is present
-  user:
+  ansible.builtin.user:
     name: "{{ gitea_user }}"
     state: "present"
     system: false
@@ -9,7 +9,7 @@
   register: gitea_user_res
 
 - name: Ensure host directories exist
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     owner: "{{ gitea_user_res.uid }}"
     group: "{{ gitea_user_res.group }}"
@@ -19,7 +19,7 @@
     - "{{ gitea_data_path }}"
 
 - name: Ensure .ssh folder for gitea user exists
-  file:
+  ansible.builtin.file:
     path: "/home/{{ gitea_user }}/.ssh"
     state: directory
     owner: "{{ gitea_user_res.uid }}"
@@ -38,7 +38,7 @@
   register: gitea_user_ssh_key
 
 - name: Create forwarding script
-  copy:
+  ansible.builtin.copy:
     dest: "/usr/local/bin/gitea"
     owner: "{{ gitea_user_res.uid }}"
     group: "{{ gitea_user_res.group }}"
@@ -47,7 +47,7 @@
       ssh -p {{ gitea_public_ssh_server_port }} -o StrictHostKeyChecking=no {{ gitea_run_user }}@127.0.0.1 -i /home/{{ gitea_user }}/.ssh/id_ssh_ed25519 "SSH_ORIGINAL_COMMAND=\"$SSH_ORIGINAL_COMMAND\" $0 $@"
 
 - name: Add host pubkey to git users authorized_keys file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "/home/{{ gitea_user }}/.ssh/authorized_keys"
     line: "{{ gitea_user_ssh_key.public_key }} Gitea:Host2Container"
     state: present
@@ -77,7 +77,7 @@
     state: "{{ gitea_container_state }}"
 
 - name: Ensure given configuration is set in the config file
-  ini_file:
+  ansible.builtin.ini_file:
     path: "{{ gitea_data_path }}/gitea/conf/app.ini"
     section: "{{ section }}"
     option: "{{ option }}"
