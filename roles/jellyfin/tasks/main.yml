@@ -1,14 +1,14 @@
 ---
 
 - name: Ensure user '{{ jellyfin_user }}' for jellyfin is created
-  user:
+  ansible.builtin.user:
     name: "{{ jellyfin_user }}"
     state: present
     system: yes
   register: jellyfin_user_info
 
 - name: Ensure host directories for jellyfin exist
-  file:
+  ansible.builtinfile:
     path: "{{ item.path }}"
     state: directory
     owner: "{{ item.owner  | default(jellyfin_uid) }}"
@@ -17,7 +17,7 @@
   loop: "{{ jellyfin_host_directories }}"
 
 - name: Ensure container image for jellyfin is available
-  docker_image:
+  community.docker.docker_image:
     name: "{{ jellyfin_container_image_ref }}"
     state: present
     source: pull
@@ -28,7 +28,7 @@
   delay: 3
 
 - name: Ensure container '{{ jellyfin_container_name }}' is running
-  docker_container:
+  community.docker.docker_container:
     name: "{{ jellyfin_container_name }}"
     image: "{{ jellyfin_container_image_ref }}"
     user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
