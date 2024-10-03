@@ -6,6 +6,7 @@ authors:
 - transcaffeine <transcaffeine@finally.coffee>
 description: Various ansible roles useful for automating infrastructure
 dependencies:
+  "community.crypto": "^2.0.0"
   "community.docker": "^3.0.0"
 license_file: LICENSE.md
 build_ignore:
