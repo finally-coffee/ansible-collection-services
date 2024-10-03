@@ -1,0 +1,12 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: vouch_proxy
+  description: Ansible role to deploy vouch_proxy using docker
+  galaxy_tags:
+    - vouch_proxy
+    - oidc
+    - authentication
+    - authorization
+    - docker

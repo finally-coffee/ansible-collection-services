@@ -1,0 +1,10 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: ghost
+  description: Ansible role to deploy ghost (https://ghost.org) using docker
+  galaxy_tags:
+    - ghost
+    - blog
+    - docker

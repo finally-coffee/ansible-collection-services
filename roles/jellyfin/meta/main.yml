@@ -1,0 +1,10 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: jellyfin
+  description: Ansible role to deploy jellyfin using docker
+  galaxy_tags:
+    - jellyfin
+    - streaming
+    - docker

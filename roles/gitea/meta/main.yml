@@ -1,0 +1,10 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: gitea
+  description: Ansible role to deploy gitea using docker
+  galaxy_tags:
+    - gitea
+    - git
+    - docker

@@ -1,0 +1,9 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: authelia
+  description: Ansible role to deploy authelia using docker
+  galaxy_tags:
+    - authelia
+    - docker
