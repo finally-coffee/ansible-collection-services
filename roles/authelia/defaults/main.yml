@@ -57,10 +57,18 @@ authelia_config_server_address: >-2
   {{ authelia_config_server_host }}:{{ authelia_config_server_port }}
 authelia_config_server_path: ""
 authelia_config_server_asset_path: "/config/assets/"
-authelia_config_server_read_buffer_size: 4096
-authelia_config_server_write_buffer_size: 4096
-authelia_config_server_enable_pprof: true
-authelia_config_server_enable_expvars: true
+authelia_config_server_buffers_read: 4096
+authelia_config_server_read_buffer_size: >-2
+  {{ authelia_config_server_buffers_read }}
+authelia_config_server_buffers_write: 4096
+authelia_config_server_write_buffer_size: >-2
+  {{ authelia_config_server_buffers_write }}
+authelia_config_server_endpoints_enable_pprof: true
+authelia_config_server_enable_pprof: >-2
+  {{ authelia_config_server_endpoints_enable_pprof }}
+authelia_config_server_endpoints_enable_expvars: true
+authelia_config_server_enable_expvars: >-2
+  {{ authelia_config_server_endpoints_enable_expvars }}
 authelia_config_server_disable_healthcheck:
 authelia_config_server_tls_key: ~
 authelia_config_server_tls_certificate: ~
@@ -146,6 +154,8 @@ authelia_config_session_secret: ~
 authelia_config_session_expiration: 1h
 authelia_config_session_inactivity: 5m
 authelia_config_session_remember_me_duration: 1M
+authelia_config_session_remember_me: >-2
+  {{ authelia_config_session_remember_me_duration }}
 authelia_config_session_redis_host: "{{ authelia_redis_host }}"
 authelia_config_session_redis_port: "{{ authelia_redis_port }}"
 authelia_config_session_redis_username: "{{ authelia_redis_user }}"

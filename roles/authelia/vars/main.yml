@@ -50,14 +50,18 @@ authelia_config_server: >-2
     {
       "address": authelia_config_server_address,
       "asset_path": authelia_config_server_asset_path,
-      "read_buffer_size": authelia_config_server_read_buffer_size,
-      "write_buffer_size": authelia_config_server_write_buffer_size,
-      "enable_pprof": authelia_config_server_enable_pprof,
-      "enable_expvars": authelia_config_server_enable_expvars,
       "disable_healthcheck": authelia_config_server_disable_healthcheck,
+      "endpoints": authelia_config_server_endpoints,
+      "buffers": authelia_config_server_buffers,
     } | combine({"headers": {"csp_template": authelia_config_server_headers_csp_template}}
         if authelia_config_server_headers_csp_template | default(false, true) else {})
   }}
+authelia_config_server_endpoints:
+  enable_expvars: "{{ authelia_config_server_endpoints_enable_expvars }}"
+  enable_pprof: "{{ authelia_config_server_endpoints_enable_pprof }}"
+authelia_config_server_buffers:
+  read: "{{ authelia_config_server_buffers_read }}"
+  write: "{{ authelia_config_server_buffers_write }}"
 authelia_config_server_tls:
   key: "{{ authelia_config_server_tls_key }}"
   certificate: "{{ authelia_config_server_tls_certificate }}"
@@ -173,7 +177,7 @@ authelia_config_session:
   secret: "{{ authelia_config_session_secret }}"
   expiration: "{{ authelia_config_session_expiration }}" 
   inactivity: "{{ authelia_config_session_inactivity }}"
-  remember_me_duration: "{{ authelia_config_session_remember_me_duration }}"
+  remember_me: "{{ authelia_config_session_remember_me }}"
 authelia_config_session_redis: >-2
   {{
     {
