@@ -85,6 +85,7 @@
     labels: "{{ authelia_container_labels }}"
     volumes: "{{ authelia_container_volumes }}"
     networks: "{{ authelia_container_networks | default(omit, true) }}"
+    etc_hosts: "{{ authelia_container_etc_hosts | default(omit, true) }}"
     purge_networks: "{{ authelia_container_purge_networks | default(omit, true)}}"
     restart_policy: "{{ authelia_container_restart_policy }}"
     state: "{{ authelia_container_state }}"
