@@ -88,5 +88,6 @@
     etc_hosts: "{{ authelia_container_etc_hosts | default(omit, true) }}"
     purge_networks: "{{ authelia_container_purge_networks | default(omit, true)}}"
     restart_policy: "{{ authelia_container_restart_policy }}"
+    recreate: "{{ authelia_container_recreate | default(omit, true) }}"
     state: "{{ authelia_container_state }}"
   register: authelia_container_info
