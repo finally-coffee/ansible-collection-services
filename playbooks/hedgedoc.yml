@@ -1,0 +1,6 @@
+---
+- name: Install and configure hedgedoc
+  hosts: "{{ hedgedoc_hosts | default('hedgedoc') }}"
+  become: "{{ hedgedoc_become | default(true, false) }}"
+  roles:
+    - role: finallycoffee.services.hedgedoc

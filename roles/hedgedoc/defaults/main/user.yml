@@ -1,0 +1,5 @@
+---
+hedgedoc_run_user_id: >-2
+  {{ hedgedoc_user_info.uid | default(hedgedoc_user }}
+hedgedoc_run_group_id: >-2
+  {{ hedgedoc_user_info.group | default(hedgedoc_user }}

@@ -17,6 +17,9 @@ concise area of concern.
 - [`gitea`](roles/gitea/README.md): Deploy [gitea.io](https://gitea.io), a
   lightweight, self-hosted git service.
 
+- [`hedgedoc`](roles/hedgedoc/README.md): Deploy [hedgedoc](https://hedgedoc.org/),
+  a collaborative real-time markdown editor using websockts
+
 - [`jellyfin`](roles/jellyfin/README.md): Deploy [jellyfin.org](https://jellyfin.org),
   the free software media system for streaming stored media to any device.
 

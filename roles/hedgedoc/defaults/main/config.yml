@@ -1,0 +1,52 @@
+---
+hedgedoc_config_domain: ~
+hedgedoc_config_log_level: "info"
+hedgedoc_config_session_secret: ~
+hedgedoc_config_protocol_use_ssl: true
+hedgedoc_config_hsts_enable: true
+hedgedoc_config_csp_enable: true
+hedgedoc_config_cookie_policy: 'lax'
+hedgedoc_config_allow_free_url: true
+hedgedoc_config_allow_email_register: false
+hedgedoc_config_allow_anonymous: true
+hedgedoc_config_allow_gravatar: true
+hedgedoc_config_require_free_url_authentication: true
+hedgedoc_config_default_permission: 'full'
+
+hedgedoc_config_db_username: hedgedoc
+hedgedoc_config_db_password: ~
+hedgedoc_config_db_database: hedgedoc
+hedgedoc_config_db_host: localhost
+hedgedoc_config_db_port: 5432
+hedgedoc_config_db_dialect: postgres
+
+hedgedoc_config_database:
+  username: "{{ hedgedoc_config_db_username }}"
+  password: "{{ hedgedoc_config_db_password }}"
+  database: "{{ hedgedoc_config_db_database }}"
+  host: "{{ hedgedoc_config_db_host }}"
+  port: "{{ hedgedoc_config_db_port | int }}"
+  dialect: "{{ hedgedoc_config_db_dialect }}"
+hedgedoc_config_base:
+  production:
+    domain: "{{ hedgedoc_config_domain }}"
+    loglevel: "{{ hedgedoc_config_log_level }}"
+    sessionSecret: "{{ hedgedoc_config_session_secret }}"
+    protocolUseSSL: "{{ hedgedoc_config_protocol_use_ssl }}"
+    cookiePolicy: "{{ hedgedoc_config_cookie_policy }}"
+    allowFreeURL: "{{ hedgedoc_config_allow_free_url }}"
+    allowAnonymous: "{{ hedgedoc_config_allow_anonymous }}"
+    allowEmailRegister: "{{ hedgedoc_config_allow_email_register }}"
+    allowGravatar: "{{ hedgedoc_config_allow_gravatar }}"
+    requireFreeURLAuthentication: >-2
+      {{ hedgedoc_config_require_free_url_authentication }}
+    defaultPermission: "{{ hedgedoc_config_default_permission }}"
+    hsts:
+      enable: "{{ hedgedoc_config_hsts_enable }}"
+    csp:
+      enable: "{{ hedgedoc_config_csp_enable }}"
+    db: "{{ hedgedoc_config_database }}"
+hedgedoc_config: ~
+hedgedoc_full_config: >-2
+  {{ hedgedoc_config_base | default({}, true)
+    | combine(hedgedoc_config | default({}, true), recursive=True) }}

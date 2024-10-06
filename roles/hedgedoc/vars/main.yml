@@ -1,0 +1,10 @@
+---
+hedgedoc_states:
+  - present
+  - absent
+hedgedoc_deployment_methods:
+  - docker
+
+hedgedoc_required_arguments:
+  - hedgedoc_config_domain
+  - hedgedoc_config_session_secret

@@ -1,0 +1,9 @@
+---
+hedgedoc_user: hedgedoc
+hedgedoc_version: 1.9.9
+
+hedgedoc_state: present
+hedgedoc_deployment_method: docker
+
+hedgedoc_config_file: "/etc/hedgedoc/config.json"
+hedgedoc_uploads_path: "/var/lib/hedgedoc-uploads"

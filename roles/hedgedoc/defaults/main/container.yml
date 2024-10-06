@@ -1,0 +1,54 @@
+---
+hedgedoc_container_image_registry: quay.io
+hedgedoc_container_image_namespace: hedgedoc
+hedgedoc_container_image_name: hedgedoc
+hedgedoc_container_image_flavour: alpine
+hedgedoc_container_image_tag: ~
+hedgedoc_container_image: >-2
+  {{
+    ([
+      hedgedoc_container_image_registry,
+      hedgedoc_container_image_namespace | default([], true),
+      hedgedoc_container_image_name,
+    ] | flatten | join('/'))
+    + ':'
+    + hedgedoc_container_image_tag | default(
+      hedgedoc_version + (
+        ((hedgedoc_container_image_flavour is string)
+          and (hedgedoc_container_image_flavour | length > 0))
+        | ternary('-' +
+          hedgedoc_container_image_flavour | default('', true),
+          ''
+        )
+      ),
+      true
+    )
+  }}
+hedgedoc_container_image_source: pull
+hedgedoc_container_name: hedgedoc
+hedgedoc_container_state: >-2
+  {{ (hedgedoc_state == 'present') | ternary('started', 'absent') }}
+
+hedgedoc_container_config_file: "/hedgedoc/config.json"
+hedgedoc_container_upload_path: "/hedgedoc/public/uploads"
+
+hedgedoc_container_env: ~
+hedgedoc_container_user: >-2
+  {{ hedgedoc_run_user_id }}:{{ hedgedoc_run_group_id }}
+hedgedoc_container_ports: ~
+hedgedoc_container_networks: ~
+hedgedoc_container_etc_hosts: ~
+hedgedoc_container_base_volumes:
+  - "{{ hedgedoc_config_file }}:{{ hedgedoc_container_config_file }}:ro"
+  - "{{ hedgedoc_uploads_path }}:{{ hedgedoc_container_upload_path }}:rw"
+hedgedoc_container_volumes: ~
+hedgedoc_container_all_volumes: >-2
+  {{ hedgedoc_container_base_volumes | default([], true)
+    + hedgedoc_container_volumes | default([], true) }}
+hedgedoc_container_base_labels:
+  version: "{{ hedgedoc_container_tag | default(hedgedoc_version, true) }}"
+hedgedoc_container_labels: ~
+hedgedoc_container_all_labels: >-2
+  {{ hedgedoc_container_base_labels | default({}, true)
+    | combine(hedgedoc_container_labels | default({}, true)) }}
+hedgedoc_container_restart_policy: "unless-stopped"

@@ -1,0 +1,12 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: hedgedoc
+  description: >-2
+    Deploy hedgedoc, a collaborative markdown editor, using docker
+  galaxy_tags:
+    - hedgedoc
+    - markdown
+    - collaboration
+    - docker

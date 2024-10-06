@@ -1,0 +1,23 @@
+---
+- name: Check for valid state
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ hedgedoc_state }}'. Supported
+      states are {{ hedgedoc_states | join(', ') }}.
+  when: hedgedoc_state not in hedgedoc_states
+
+- name: Check for valid deployment method
+  ansible.builtin.fail:
+    msg: >-2
+      Deployment method '{{ hedgedoc_deployment_method }}'
+      is not supported. Supported are:
+      {{ hedgedoc_deployment_methods | join(', ') }}
+  when: hedgedoc_deployment_method not in hedgedoc_deployment_methods
+
+- name: Ensure required variables are given
+  ansible.builtin.file:
+    msg: "Required variable '{{ item }}' is undefined!"
+  loop: "{{ hedgedoc_required_arguments }}"
+  when: >-2
+    item not in hostvars[inventory_hostname]
+    or hostvars[inventory_hostname][item] | length == 0

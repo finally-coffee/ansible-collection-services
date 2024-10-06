@@ -1,0 +1,21 @@
+---
+- name: Check preconditions
+  ansible.builtin.include_tasks:
+    file: "check.yml"
+
+- name: Ensure user '{{ hedgedoc_user }}' is {{ hedgedoc_state }}
+  ansible.builtin.user:
+    name: "{{ hedgedoc_user }}"
+    state: "{{ hedgedoc_state }}"
+    system: "{{ hedgedoc_user_system | default(true, false) }}"
+  register: hedgedoc_user_info
+
+- name: Ensure configuration file '{{ hedgedoc_config_file }}' is {{ hedgedoc_state }}
+  ansible.builtin.copy:
+    dest: "{{ hedgedoc_config_file }}"
+    content: "{{ hedgedoc_full_config | to_nice_json }}"
+  when: hedgedoc_state == 'present'
+
+- name: Ensure hedgedoc is deployed using {{ hedgedoc_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ hedgedoc_deployment_method }}.yml"

@@ -1,0 +1,24 @@
+---
+- name: Ensure container image '{{ hedgedoc_container_image }}' is {{ hedgedoc_state }}
+  community.docker.docker_image:
+    name: "{{ hedgedoc_container_image }}"
+    state: "{{ hedgedoc_state }}"
+    source: "{{ hedgedoc_container_image_source }}"
+    force_source: >-2
+      {{ hedgedoc_container_force_source | default(
+        hedgedoc_container_image_tag | default(false, true), true) }}
+  register: hedgedoc_container_image_info
+  until: hedgedoc_container_image_info is success
+  retries: 5
+  delay: 3
+
+- name: Ensure container '{{ hedgedoc_container_name }}' is {{ hedgedoc_container_state }}
+  community.docker.docker_container:
+    name: "{{ hedgedoc_container_name }}"
+    image: "{{ hedgedoc_container_image }}"
+    env: "{{ hedgedoc_container_env | default(omit, true) }}"
+    labels: "{{ hedgedoc_container_all_labels }}"
+    volumes: "{{ hedgedoc_container_all_volumes }}"
+    etc_hosts: "{{ hedgedoc_container_etc_hosts | default(omit, true) }}"
+    restart_policy: "{{ hedgedoc_container_restart_policy | default(omit, true) }}"
+    state: "{{ hedgedoc_container_state }}"
