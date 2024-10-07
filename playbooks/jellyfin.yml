@@ -1,0 +1,6 @@
+---
+- name: Install and configure jellyfin
+  hosts: "{{ jellyfin_hosts | default('jellyfin') }}"
+  become: "{{ jellyfin_become | default(true, false) }}"
+  roles:
+    - role: finallycoffee.services.jellyfin

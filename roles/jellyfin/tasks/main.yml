@@ -1,33 +1,40 @@
 ---
+- name: Check if state is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ jellyfin_state }}'. Supported
+      states are {{ jellyfin_states | join(', ') }}.
+  when: jellyfin_state not in jellyfin_states
 
-- name: Ensure user '{{ jellyfin_user }}' for jellyfin is created
+- name: Ensure jellyfin user '{{ jellyfin_user }}' is {{ jellyfin_state }}
   ansible.builtin.user:
     name: "{{ jellyfin_user }}"
-    state: present
-    system: yes
+    state: "{{ jellyfin_state }}"
+    system: "{{ jellyfin_user_system | default(true, true) }}"
   register: jellyfin_user_info
 
-- name: Ensure host directories for jellyfin exist
-  ansible.builtinfile:
+- name: Ensure host directories for jellyfin are {{ jellyfin_state }}
+  ansible.builtin.file:
     path: "{{ item.path }}"
-    state: directory
+    state: >-2
+      {{ (jellyfin_state == 'present') | ternary('directory', 'absent') }}
     owner: "{{ item.owner  | default(jellyfin_uid) }}"
     group: "{{ item.group | default(jellyfin_gid) }}"
     mode: "{{ item.mode }}"
   loop: "{{ jellyfin_host_directories }}"
 
-- name: Ensure container image for jellyfin is available
+- name: Ensure container image '{{ jellyfin_container_image_ref }}' is {{ jellyfin_state }}
   community.docker.docker_image:
     name: "{{ jellyfin_container_image_ref }}"
-    state: present
-    source: pull
+    state: "{{ jellyfin_state }}"
+    source: "{{ jellyfin_container_image_source }}"
     force_source: "{{ jellyfin_container_image_tag | default(false, true) }}"
   register: jellyfin_container_image_pull_result
   until: jellyfin_container_image_pull_result is succeeded
   retries: 5
   delay: 3
 
-- name: Ensure container '{{ jellyfin_container_name }}' is running
+- name: Ensure container '{{ jellyfin_container_name }}' is {{ jellyfin_container_state }}
   community.docker.docker_container:
     name: "{{ jellyfin_container_name }}"
     image: "{{ jellyfin_container_image_ref }}"
@@ -37,4 +44,4 @@
     networks: "{{ jellyfin_container_networks | default(omit, True) }}"
     network_mode: "{{ jellyfin_container_network_mode }}"
     restart_policy: "{{ jellyfin_container_restart_policy }}"
-    state: started
+    state: "{{ jellyfin_container_state }}"

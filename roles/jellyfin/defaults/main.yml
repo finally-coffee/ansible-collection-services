@@ -1,7 +1,7 @@
 ---
-
 jellyfin_user: jellyfin
 jellyfin_version: 10.9.11
+jellyfin_state: present
 
 jellyfin_base_path: /opt/jellyfin
 jellyfin_config_path: "{{ jellyfin_base_path }}/config"
@@ -12,7 +12,11 @@ jellyfin_media_volumes: []
 jellyfin_container_name: jellyfin
 jellyfin_container_image_name: "docker.io/jellyfin/jellyfin"
 jellyfin_container_image_tag: ~
-jellyfin_container_image_ref: "{{ jellyfin_container_image_name }}:{{ jellyfin_container_image_tag | default(jellyfin_version, true) }}"
+jellyfin_container_image_ref: >-2
+  {{ jellyfin_container_image_name }}:{{ jellyfin_container_image_tag | default(jellyfin_version, true) }}
+jellyfin_container_image_source: pull
+jellyfin_container_state: >-2
+  {{ (jellyfin_state == 'present') | ternary('started', 'absent') }}
 jellyfin_container_network_mode: host
 jellyfin_container_networks: ~
 jellyfin_container_volumes: "{{ jellyfin_container_base_volumes + jellyfin_media_volumes }}"
