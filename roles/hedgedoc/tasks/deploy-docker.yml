@@ -17,6 +17,8 @@
     name: "{{ hedgedoc_container_name }}"
     image: "{{ hedgedoc_container_image }}"
     env: "{{ hedgedoc_container_env | default(omit, true) }}"
+    user: "{{ hedgedoc_container_user | default(omit, true) }}"
+    ports: "{{ hedgedoc_container_ports | default(omit, true) }}"
     labels: "{{ hedgedoc_container_all_labels }}"
     volumes: "{{ hedgedoc_container_all_volumes }}"
     etc_hosts: "{{ hedgedoc_container_etc_hosts | default(omit, true) }}"
