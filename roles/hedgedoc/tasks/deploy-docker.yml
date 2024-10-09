@@ -22,5 +22,10 @@
     labels: "{{ hedgedoc_container_all_labels }}"
     volumes: "{{ hedgedoc_container_all_volumes }}"
     etc_hosts: "{{ hedgedoc_container_etc_hosts | default(omit, true) }}"
-    restart_policy: "{{ hedgedoc_container_restart_policy | default(omit, true) }}"
+    dns_servers: >-2
+      {{ hedgedoc_container_dns_servers | default(omit, true) }}
+    network_mode: >-2
+      {{ hedgedoc_container_network_mode | default(omit, true) }}
+    restart_policy: >-2
+      {{ hedgedoc_container_restart_policy | default(omit, true) }}
     state: "{{ hedgedoc_container_state }}"

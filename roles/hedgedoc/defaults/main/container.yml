@@ -48,7 +48,10 @@ hedgedoc_container_all_volumes: >-2
 hedgedoc_container_base_labels:
   version: "{{ hedgedoc_container_tag | default(hedgedoc_version, true) }}"
 hedgedoc_container_labels: ~
+hedgedoc_container_network_mode: ~
 hedgedoc_container_all_labels: >-2
   {{ hedgedoc_container_base_labels | default({}, true)
     | combine(hedgedoc_container_labels | default({}, true)) }}
-hedgedoc_container_restart_policy: "unless-stopped"
+hedgedoc_container_restart_policy: >-2
+  {{ (hedgedoc_deployment_method === 'docker')
+      | ternary('unless-stopped', 'on-failure') }}

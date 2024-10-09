@@ -4,6 +4,7 @@ hedgedoc_states:
   - absent
 hedgedoc_deployment_methods:
   - docker
+  - podman
 
 hedgedoc_required_arguments:
   - hedgedoc_config_domain
