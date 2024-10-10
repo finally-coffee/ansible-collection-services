@@ -11,7 +11,7 @@ gitea_domain: ~
 
 # container config
 gitea_container_name: "{{ gitea_user }}"
-gitea_contianer_image_server: "docker.io"
+gitea_container_image_server: "docker.io"
 gitea_container_image_name: "gitea"
 gitea_container_image_namespace: gitea
 gitea_container_image_fq_name: >-
