@@ -1,6 +1,6 @@
 namespace: finallycoffee
 name: services
-version: 0.1.4
+version: 0.1.5
 readme: README.md
 authors:
 - transcaffeine <transcaffeine@finally.coffee>
@@ -13,3 +13,9 @@ build_ignore:
 - '*.tar.gz'
 repository: https://git.finally.coffee/finallycoffee/services
 issues: https://codeberg.org/finallycoffee/ansible-collection-services/issues
+tags:
+  - authelia
+  - gitea
+  - hedgedoc
+  - jellyfin
+  - docker
