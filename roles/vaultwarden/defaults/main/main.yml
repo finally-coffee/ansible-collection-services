@@ -1,0 +1,10 @@
+---
+vaultwarden_user: vaultwarden
+vaultwarden_version: "1.32.2"
+
+vaultwarden_config_file: "/etc/vaultwarden/config.json"
+vaultwarden_config_directory: "{{ vaultwarden_config_file | dirname }}"
+vaultwarden_data_directory: "/var/lib/vaultwarden"
+
+vaultwarden_state: present
+vaultwarden_deployment_method: docker

@@ -1,0 +1,9 @@
+---
+- name: Ensure vaultwarden container '{{ vaultwarden_container_name }}' is restarted
+  community.docker.docker_container:
+    name: "{{ vaultwarden_container_name }}"
+    state: "{{ vaultwarden_container_state }}"
+    restart: true
+  listen: vaultwarden-restart
+  when: vaultwarden_deployment_method == 'docker'
+  ignore_errors: "{{ ansible_check_mode }}"
