@@ -1,0 +1,12 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: vaultwarden
+  description: >-2
+    Deploy vaultwarden, a bitwarden-compatible server backend
+  galaxy_tags:
+    - vaultwarden
+    - bitwarden
+    - passwordstore
+    - docker

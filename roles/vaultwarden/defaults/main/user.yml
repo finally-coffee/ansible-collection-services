@@ -1,0 +1,5 @@
+---
+vaultwarden_run_user_id: >-2
+  {{ vaultwarden_user_info.uid | default(vaultwarden_user, true) }}
+vaultwarden_run_group_id: >-2
+  {{ vaultwarden_user_info.group | default(vaultwarden_user, true) }}

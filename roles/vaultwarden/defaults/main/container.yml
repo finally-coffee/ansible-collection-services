@@ -1,0 +1,50 @@
+---
+vaultwarden_container_image_registry: docker.io
+vaultwarden_container_image_namespace: vaultwarden
+vaultwarden_container_image_name: server
+vaultwarden_container_image_tag: ~
+vaultwarden_container_image_flavour: alpine
+vaultwarden_container_image_source: pull
+vaultwarden_container_image_force_source: >-2
+  {{ vaultwarden_container_image_tag | default(false, true) | bool }}
+vaultwarden_container_image: >-2
+  {{
+    ([
+      vaultwarden_container_image_registry | default([], true),
+      vaultwarden_container_image_namespace | default([], true),
+      vaultwarden_container_image_name,
+    ] | flatten |  join('/'))
+    + ':'
+    + (vaultwarden_container_image_tag | default(
+        vaultwarden_version + (
+          ((vaultwarden_container_image_flavour is string)
+            and (vaultwarden_container_image_flavour | length > 0))
+          | ternary(
+            '-' + vaultwarden_container_image_flavour | default('', true),
+            ''
+          )
+        ),
+        true
+    ))
+  }}
+
+vaultwarden_container_name: vaultwarden
+vaultwarden_container_env: ~
+vaultwarden_container_user: >-2
+  {{ vaultwarden_run_user_id }}:{{ vaultwarden_run_group_id }}
+vaultwarden_container_ports: ~
+vaultwarden_container_labels: ~
+vaultwarden_container_networks: ~
+vaultwarden_container_etc_hosts: ~
+vaultwarden_container_dns_servers: ~
+vaultwarden_container_restart_policy: >-2
+  {{ (vaultwarden_deployment_method == 'docker') | ternary(
+      'unless-stopped',
+      'on-failure',
+      )
+  }}
+vaultwarden_container_state: >-2
+  {{ (vaultwarden_state == 'present') | ternary('started', 'absent') }}
+vaultwarden_container_volumes:
+  - "{{ vaultwarden_data_directory }}:/data:rw"
+  - "{{ vaultwarden_config_file }}:/data/config.json:ro"

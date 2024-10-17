@@ -1,0 +1,68 @@
+---
+# Required configuration
+vaultwarden_config_domain: ~
+vaultwarden_config_admin_token: ~
+# Invitations and signups
+vaultwarden_config_invitations_allowed: false
+vaultwarden_config_invitation_org_name: ~
+vaultwarden_config_signups_allowed: false
+vaultwarden_config_signups_verify: true
+vaultwarden_config_signups_verify_resend_time: 3600
+vaultwarden_config_signups_verify_resend_limit: 5
+# Entry preview icons
+vaultwarden_config_disable_icon_download: true
+vaultwarden_config_icon_cache_ttl: 604800 # 7 days
+vaultwarden_config_icon_cache_negttl: 259200 # 3 days
+vaultwarden_config_icon_download_timeout: 30 # seconds
+vaultwarden_config_icon_blacklist_non_global_ips: true
+# Features
+vaultwarden_config_sends_allowed: true
+vaultwarden_config_enable_yubico: false
+vaultwarden_config_enable_duo: false
+vaultwarden_config_enable_smtp: false
+vaultwarden_config_enable_email_2fa: false
+# Security
+vaultwarden_config_password_iterations: 100000
+vaultwarden_config_show_password_hint: false
+vaultwarden_config_disable_2fa_remember: false
+vaultwarden_config_disable_admin_token: true
+vaultwarden_config_require_device_email: false
+vaultwarden_config_authenticator_disable_time_drift: true
+# Other
+vaultwarden_config_log_timestamp_format: "%Y-%m-%d %H:%M:%S.%3f"
+vaultwarden_config_ip_header: "X-Real-IP"
+vaultwarden_config_reload_templates: false
+
+vaultwarden_base_config:
+  domain: "{{ vaultwarden_config_domain }}"
+  admin_token: "{{ vaultwarden_config_admin_token }}"
+  invitations_allowed: "{{ vaultwarden_config_invitations_allowed }}"
+  invitation_org_name: "{{ vaultwarden_config_invitation_org_name | default('', true) }}"
+  signups_allowed: "{{ vaultwarden_config_signups_allowed }}"
+  signups_verify: "{{ vaultwarden_config_signups_verify }}"
+  signups_verify_resend_time: "{{ vaultwarden_config_signups_verify_resend_time }}"
+  signups_verify_resend_limit: "{{ vaultwarden_config_signups_verify_resend_limit }}"
+  disable_icon_download: "{{ vaultwarden_config_disable_icon_download }}"
+  icon_cache_ttl: "{{ vaultwarden_config_icon_cache_ttl }}"
+  icon_cache_negttl: "{{ vaultwarden_config_icon_cache_negttl }}"
+  icon_download_timeout: "{{ vaultwarden_config_icon_download_timeout }}"
+  icon_blacklist_non_global_ips: "{{ vaultwarden_config_icon_blacklist_non_global_ips }}"
+  password_iterations: "{{ vaultwarden_config_password_iterations }}"
+  show_password_hint: "{{ vaultwarden_config_show_password_hint }}"
+  disable_2fa_remember: "{{ vaultwarden_config_disable_2fa_remember }}"
+  disable_admin_token: "{{ vaultwarden_config_disable_admin_token }}"
+  require_device_email: "{{ vaultwarden_config_require_device_email }}"
+  authenticator_disable_time_drift: "{{ vaultwarden_config_authenticator_disable_time_drift }}"
+  ip_header: "{{ vaultwarden_config_ip_header }}"
+  log_timestamp_format: "{{ vaultwarden_config_log_timestamp_format }}"
+  reload_templates: "{{ vaultwarden_config_reload_templates }}"
+  sends_allowed: "{{ vaultwarden_config_sends_allowed }}"
+  _enable_yubico: "{{ vaultwarden_config_enable_yubico }}"
+  _enable_duo: "{{ vaultwarden_config_enable_duo }}"
+  _enable_smtp: "{{ vaultwarden_config_enable_smtp }}"
+  _enable_email_2fa: "{{ vaultwarden_config_enable_email_2fa }}"
+
+vaultwarden_config: ~
+vaultwarden_merged_config: >-2
+  {{ vaultwarden_base_config | default({}, true)
+    | combine(vaultwarden_config | default({}, true), recursive=true) }}
