@@ -1,0 +1,6 @@
+---
+- name: Install and configure vaultwarden
+  hosts: "{{ vaultwarden_hosts | default('vaultwarden') }}"
+  become: "{{ vaultwarden_become | default(true, false) }}"
+  roles:
+    - role: finallycoffee.services.vaultwarden

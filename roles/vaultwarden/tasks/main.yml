@@ -1,0 +1,78 @@
+---
+- name: Ensure state is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ vaultwarden_state }}'!
+      Supported states are {{ vaultwarden_states | join(', ') }}.
+  when: vaultwarden_state not in vaultwarden_states
+
+- name: Ensure deployment method is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported deployment method '{{ vaultwarden_deployment_method }}'!
+      Supported are {{ vaultwarden_deployment_methods | join(', ') }}.
+  when: vaultwarden_deployment_method not in vaultwarden_deployment_methods
+
+- name: Ensure required variables are given
+  ansible.builtin.fail:
+    msg: "Required variable '{{ var }}' is undefined!"
+  loop: "{{ vaultwarden_required_variables }}"
+  loop_control:
+    loop_var: var
+  when: >-2
+    var not in hostvars[inventory_hostname]
+    or hostvars[inventory_hostname][var] | length == 0
+
+- name: Ensure required variables are given
+  ansible.builtin.fail:
+    msg: "Required variable '{{ var.name }}' is undefined!"
+  loop: "{{ vaultwarden_conditionally_required_variables }}"
+  loop_control:
+    loop_var: var
+    label: "{{ var.name }}"
+  when: >-2
+    var.when and (
+      var.name not in hostvars[inventory_hostname]
+      or hostvars[inventory_hostname][var.name] | length == 0)
+
+- name: Ensure vaultwarden user '{{ vaultwarden_user }}' is {{ vaultwarden_state }}
+  ansible.builtin.user:
+    name: "{{ vaultwarden_user }}"
+    state: "{{ vaultwarden_state }}"
+    system: "{{ vaultwarden_user_system | default(true, true) }}"
+    create_home: "{{ vaultwarden_user_create_home | default(false, true) }}"
+    groups: "{{ vaultwarden_user_groups | default(omit, true) }}"
+    append: >-2
+      {{ vaultwarden_user_append_groups | default(
+        (vaultwarden_user_groups | default([], true) | length > 0),
+        true,
+      ) }}
+  register: vaultwarden_user_info
+
+- name: Ensure base paths are {{ vaultwarden_state }}
+  ansible.builtin.file:
+    path: "{{ mount.path }}"
+    state: "{{ (vaultwarden_state == 'present') | ternary('directory', 'absent') }}"
+    owner: "{{ mount.owner | default(vaultwarden_run_user_id) }}"
+    group: "{{ mount.group | default(vaultwarden_run_group_id) }}"
+    mode: "{{ mount.mode | default('0755', true) }}"
+  loop:
+    - path: "{{ vaultwarden_config_directory }}"
+    - path: "{{ vaultwarden_data_directory }}"
+  loop_control:
+    loop_var: mount
+    label: "{{ mount.path }}"
+
+- name: Ensure vaultwarden config file '{{ vaultwarden_config_file }}' is {{ vaultwarden_state }}
+  ansible.builtin.copy:
+    content: "{{ vaultwarden_merged_config | to_nice_json(indent=4) }}"
+    dest: "{{ vaultwarden_config_file }}"
+    owner: "{{ vaultwarden_run_user_id }}"
+    group: "{{ vaultwarden_run_group_id }}"
+    mode: "0640"
+  when: vaultwarden_state == 'present'
+  notify: vaultwarden-restart
+
+- name: Deploy vaultwarden using {{ vaultwarden_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ vaultwarden_deployment_method }}.yml"

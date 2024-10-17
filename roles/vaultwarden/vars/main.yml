@@ -1,0 +1,11 @@
+---
+vaultwarden_states:
+  - present
+  - absent
+vaultwarden_deployment_methods:
+  - docker
+vaultwarden_required_variables:
+  - vaultwarden_config_domain
+vaultwarden_conditionally_required_variables:
+  - name: vaultwarden_config_admin_token
+    when: "{{ vaultwarden_config_disable_admin_token | default(true, true) | bool }}"

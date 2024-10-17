@@ -26,6 +26,9 @@ concise area of concern.
 - [`openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org)
   installation using the upstream provided docker-compose setup.
 
+- [`vaultwarden`](roles/vaultwarden/README.md): Deploy [vaultwarden](https://github.com/dani-garcia/vaultwarden/),
+  an open-source implementation of the Bitwarden Server (formerly Bitwarden\_RS).
+
 - [`vouch_proxy`](roles/vouch_proxy/README.md): Deploys [vouch-proxy](https://github.com/vouch/vouch-proxy),
   an authorization proxy for arbitrary webapps working with `nginx`s' `auth_request` module.
 
