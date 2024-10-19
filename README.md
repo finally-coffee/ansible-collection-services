@@ -1,4 +1,4 @@
-# `finallycoffee.service` ansible collection
+# `finallycoffee.services` ansible collection
 
 ## Overview
 
