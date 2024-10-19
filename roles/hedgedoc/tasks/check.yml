@@ -15,7 +15,7 @@
   when: hedgedoc_deployment_method not in hedgedoc_deployment_methods
 
 - name: Ensure required variables are given
-  ansible.builtin.file:
+  ansible.builtin.fail:
     msg: "Required variable '{{ item }}' is undefined!"
   loop: "{{ hedgedoc_required_arguments }}"
   when: >-2
