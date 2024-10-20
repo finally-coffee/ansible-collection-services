@@ -1,0 +1,14 @@
+---
+- name: Ensure state is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ snipe_it_state }}'!
+      Supported states are {{ snipe_it_states | join(', ') }}.
+  when: snipe_it_state is not in snipe_it_states
+
+- name: Ensure deployment method is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported deployment_method '{{ snipe_it_deployment_method }}'!
+      Supported values are {{ snipe_it_deployment_methods | join(', ') }}.
+  when: snipe_it_deployment_method is not in snipe_it_deployment_methods

@@ -26,6 +26,9 @@ concise area of concern.
 - [`openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org)
   installation using the upstream provided docker-compose setup.
 
+- [`snipe_it`](roles/snipe_it/README.md): Deploys [Snipe-IT](https://snipeitapp.com/),
+  the free and open-source IT asset (and license) management with a powerful REST API
+
 - [`vaultwarden`](roles/vaultwarden/README.md): Deploy [vaultwarden](https://github.com/dani-garcia/vaultwarden/),
   an open-source implementation of the Bitwarden Server (formerly Bitwarden\_RS).
 

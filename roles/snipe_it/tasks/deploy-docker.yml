@@ -1,0 +1,30 @@
+---
+- name: Ensure container image '{{ snipe_it_container_image }}' is {{ snipe_it_state }}
+  community.docker.docker_image:
+    name: "{{ snipe_it_container_image }}"
+    state: "{{ snipe_it_state }}"
+    source: "{{ snipe_it_container_image_source }}"
+    force_source: "{{ snipe_it_container_image_force_source }}"
+  register: snipe_it_container_image_info
+  until: snipe_it_container_image_info is success
+  retries: 5
+  delay: 3
+
+- name: Ensure container '{{ snipe_it_container_name }}' is {{ snipe_it_container_state }}
+  community.docker.docker_container:
+    name: "{{ snipe_it_container_name }}"
+    image: "{{ snipe_it_container_image }}"
+    env_file: "{{ snipe_it_env_file }}"
+    env: "{{ snipe_it_container_env | default(omit, true) }}"
+    user: "{{ snipe_it_container_user | default(omit, true) }}"
+    ports: "{{ snipe_it_container_ports | default(omit, true) }}"
+    labels: "{{ snipe_it_container_labels | default(omit, true) }}"
+    volumes: "{{ snipe_it_container_volumes | default(omit, true) }}"
+    networks: "{{ snipe_it_container_networks | default(omit, true) }}"
+    etc_hosts: "{{ snipe_it_container_etc_hosts | default(omit, true) }}"
+    dns_servers: "{{ snipe_it_container_dns_servers | default(omit, true) }}"
+    network_mode: "{{ snipe_it_container_network_mode | default(omit, true) }}"
+    restart_policy: >-2
+      {{ snipe_it_container_restart_policy | default(omit, true) }}
+    recreate: "{{ snipe_it_container_recreate | default(omit, true) }}"
+    state: "{{ snipe_it_container_state }}"
