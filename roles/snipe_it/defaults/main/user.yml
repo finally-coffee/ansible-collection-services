@@ -1,0 +1,5 @@
+---
+snipe_it_run_user_id: >-2
+  {{ snipe_it_user_info.uid | default(snipe_it_user) }}
+snipe_it_run_group_id: >-2
+  {{ snipe_it_user_info.group | default(snipe_it_user) }}
