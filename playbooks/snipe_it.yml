@@ -1,0 +1,6 @@
+---
+- name: Install and configure Snipe-IT
+  hosts: "{{ snipe_it_hosts | default('snipe_it') }}"
+  become: "{{ snipe_it_become | default(true, false) }}"
+  roles:
+    - role: finallycoffee.services.snipe_it

@@ -1,0 +1,12 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: snipe_it
+  description: >-2
+    Deploy Snipe-IT, an open-source asset / license management system with
+    powerful JSON REST API
+  galaxy_tags:
+    - snipeit
+    - asset-management
+    - docker

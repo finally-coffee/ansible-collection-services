@@ -1,0 +1,59 @@
+---
+- name: Check preconditions
+  ansible.builtin.include_tasks:
+    file: "check.yml"
+
+- name: Ensure snipe-it user '{{ snipe_it_user }}' is {{ snipe_it_state }}
+  ansible.builtin.user:
+    name: "{{ snipe_it_user }}"
+    state: "{{ snipe_it_state }}"
+    system: "{{ snipe_it_user_system | default(true, true) }}"
+    create_home: "{{ snipe_it_user_create_home | default(false, true) }}"
+    groups: "{{ snipe_it_user_groups | default(omit, true) }}"
+    append: >-2
+      {{
+        snipe_it_user_groups_append | default(
+            snipe_it_user_groups | default([], true) | length > 0,
+            true,
+        )
+      }}
+  register: snipe_it_user_info
+
+- name: Ensure snipe-it environment file is {{ snipe_it_state }}
+  ansible.builtin.file:
+    path: "{{ snipe_it_env_file }}"
+    state: "{{ snipe_it_state }}"
+  when: snipe_it_state == 'absent'
+
+- name: Ensure snipe-it config directory is {{ snipe_it_state }}
+  ansible.builtin.file:
+    path: "{{ snipe_it_env_file | dirname }}"
+    state: "{{ (snipe_it_state == 'present') | ternary('directory', 'absent') }}"
+    owner: "{{ snipe_it_run_user_id }}"
+    group: "{{ snipe_it_run_group_id }}"
+    mode: "0755"
+  when: snipe_it_state == 'present'
+
+- name: Ensure snipe-it data directory '{{ snipe_it_data_directory }}' is {{ snipe_it_state }}
+  ansible.builtin.file:
+    path: "{{ snipe_it_data_directory }}"
+    state: "{{ (snipe_it_state == 'present') | ternary('directory', 'absent') }}"
+    owner: "{{ snipe_it_run_user_id }}"
+    group: "{{ snipe_it_run_group_id }}"
+    mode: "0755"
+
+- name: Ensure snipe-it environment file is templated
+  ansible.builtin.copy:
+    content: |+2
+      {% for entry in snipe_it_merged_config | dict2items %}
+      {{ entry.key }}={{ entry.value }}
+      {% endfor %}
+    dest: "{{ snipe_it_env_file }}"
+    owner: "{{ snipe_it_run_user_id }}"
+    group: "{{ snipe_it_run_group_id }}"
+    mode: "0640"
+  when: snipe_it_state == 'present'
+
+- name: Deploy using {{ snipe_it_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ snipe_it_deployment_method }}.yml"

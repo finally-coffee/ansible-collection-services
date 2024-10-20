@@ -1,0 +1,48 @@
+---
+snipe_it_container_image_registry: docker.io
+snipe_it_container_image_namespace: snipe
+snipe_it_container_image_name: 'snipe-it'
+snipe_it_container_image_tag: ~
+snipe_it_container_image_flavour: alpine
+snipe_it_container_image_source: pull
+snipe_it_container_image_force_source: >-2
+  {{ snipe_it_container_image_tag | default(false, true) | bool }}
+snipe_it_container_image: >-2
+  {{
+    ([
+      snipe_it_container_image_registry | default([], true),
+      snipe_it_container_image_namespace | default([], true),
+      snipe_it_container_image_name,
+    ] | flatten | join('/'))
+    + ':'
+    + (snipe_it_container_image_tag | default(
+        'v' + snipe_it_version + (
+          ((snipe_it_container_image_flavour is string)
+            and (snipe_it_container_image_flavour | length > 0))
+          | ternary(
+            '-' + snipe_it_container_image_flavour | default('', true),
+            ''
+          )
+        ),
+        true
+    ))
+  }}
+
+snipe_it_container_env_file: "/var/www/html/.env"
+snipe_it_container_data_directory: "/var/lib/snipeit/"
+snipe_it_container_volumes:
+  - "{{ snipe_it_data_directory }}:{{ snipe_it_container_data_directory }}:z"
+
+snipe_it_container_name: 'snipe-it'
+snipe_it_container_state: >-2
+  {{ (snipe_it_state == 'present') | ternary('started', 'absent') }}
+snipe_it_container_env: ~
+snipe_it_container_user: ~
+snipe_it_container_ports: ~
+snipe_it_container_labels: ~
+snipe_it_container_recreate: ~
+snipe_it_container_networks: ~
+snipe_it_container_etc_hosts: ~
+snipe_it_container_dns_servers: ~
+snipe_it_container_network_mode: ~
+snipe_it_container_restart_policy: 'unless-stopped'

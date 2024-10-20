@@ -1,0 +1,6 @@
+---
+snipe_it_states:
+  - present
+  - absent
+snipe_it_deployment_methods:
+  - docker

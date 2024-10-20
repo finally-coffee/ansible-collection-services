@@ -1,0 +1,131 @@
+---
+snipe_it_config_app_version: "v{{ snipe_it_version }}"
+snipe_it_config_app_port: 8000
+snipe_it_config_app_env: "production"
+snipe_it_config_app_debug: false
+snipe_it_config_app_key: ~
+snipe_it_config_app_url: "http://localhost:{{ snipe_it_config_app_port }}"
+snipe_it_config_app_timezone: UTC
+snipe_it_config_app_locale: en-US
+snipe_it_config_app_locked: false
+snipe_it_config_app_cipher: "AES-256-GCM"
+snipe_it_config_app_force_tls: false
+snipe_it_config_app_trusted_proxies:
+  - '192.168.0.0/16'
+  - '172.16.0.0/12'
+  - '10.0.0.0/8'
+
+snipe_it_config_db_connection: mysql
+snipe_it_config_db_host: localhost
+snipe_it_config_db_port: "3306"
+snipe_it_config_db_database: snipeit
+snipe_it_config_db_username: snipeit
+snipe_it_config_db_password: ~
+snipe_it_config_db_prefix: ~
+snipe_it_config_db_dump_path: /usr/bin/
+snipe_it_config_db_charset: utf8mb4
+snipe_it_config_db_collation: utf8mb4_unicode_ci
+snipe_it_config_db_ssl: false
+snipe_it_config_db_ssl_is_paas: false
+snipe_it_config_db_ssl_key_path: ~
+snipe_it_config_db_ssl_cert_path: ~
+snipe_it_config_db_ssl_ca_path: ~
+snipe_it_config_db_ssl_cipher: ~
+snipe_it_config_db_ssl_verify_server: ~
+
+snipe_it_config_mail_mailer: smtp
+snipe_it_config_mail_host: ~
+snipe_it_config_mail_port: 587
+snipe_it_config_mail_username: ~
+snipe_it_config_mail_password: ~
+snipe_it_config_mail_tls_verify_peer: true
+snipe_it_config_mail_from_addr: ~
+snipe_it_config_mail_from_name: ~
+snipe_it_config_mail_replyto_addr: "{{ snipe_it_config_mail_from_addr }}"
+snipe_it_config_mail_replyto_name: "{{ snipe_it_config_mail_from_name }}"
+snipe_it_config_mail_auto_embed_method: attachment
+snipe_it_config_mail_backup_notification_driver: ~
+snipe_it_config_mail_backup_notification_address: ~
+
+snipe_it_config_private_filesystem_disk: "local"
+snipe_it_config_public_filesystem_disk: "local_public"
+snipe_it_config_allow_backup_delete: false
+snipe_it_config_allow_data_purge: false
+snipe_it_config_image_lib: 'gd'
+
+snipe_it_config_log_channel: 'stderr'
+snipe_it_config_log_max_days: 10
+
+snipe_it_config_cookie_name: "_snipe_session"
+snipe_it_config_cookie_domain: "{{ snipe_it_domain }}"
+snipe_it_config_secure_cookies: true
+
+snipe_it_config_session_driver: file
+snipe_it_config_session_lifetime: 12000
+snipe_it_config_cache_driver: file
+snipe_it_config_cache_prefix: snipeit
+snipe_it_config_queue_driver: file
+
+snipe_it_base_config:
+  APP_VERSION: "{{ snipe_it_config_app_version }}"
+  APP_PORT: "{{ snipe_it_config_app_port }}"
+  APP_ENV: "{{ snipe_it_config_app_env }}"
+  APP_DEBUG: "{{ snipe_it_config_app_debug }}"
+  APP_KEY: "{{ snipe_it_config_app_key }}"
+  APP_URL: "{{ snipe_it_config_app_url }}"
+  APP_TIMEZONE: "{{ snipe_it_config_app_timezone }}"
+  APP_LOCALE: "{{ snipe_it_config_app_locale }}"
+  APP_LOCKED: "{{ snipe_it_config_app_locked }}"
+  APP_CIPHER: "{{ snipe_it_config_app_cipher }}"
+  APP_FORCE_TLS: "{{ snipe_it_config_app_force_tls }}"
+  APP_TRUSTED_PROXIES: "{{ snipe_it_config_app_trusted_proxies | join(',') }}"
+  DB_CONNECTION: "{{ snipe_it_config_db_connection }}"
+  DB_HOST: "{{ snipe_it_config_db_host }}"
+  DB_PORT: "{{ snipe_it_config_db_port }}"
+  DB_DATABASE: "{{ snipe_it_config_db_database }}"
+  DB_USERNAME: "{{ snipe_it_config_db_username }}"
+  DB_PASSWORD: "{{ snipe_it_config_db_password }}"
+  DB_PREFIX: "{{ snipe_it_config_db_prefix | default('null', true) }}"
+  DB_DUMP_PATH: "{{ snipe_it_config_db_dump_path }}"
+  DB_CHARSET: "{{ snipe_it_config_db_charset }}"
+  DB_COLLATION: "{{ snipe_it_config_db_collation }}"
+  DB_SSL: "{{ snipe_it_config_db_ssl }}"
+  DB_SSL_IS_PAAS: "{{ snipe_it_config_db_ssl_is_paas }}"
+  DB_SSL_KEY_PATH: "{{ snipe_it_config_db_ssl_key_path | default('null', true) }}"
+  DB_SSL_CERT_PATH: "{{ snipe_it_config_db_ssl_cert_path | default('null', true) }}"
+  DB_SSL_CA_PATH: "{{ snipe_it_config_db_ssl_ca_path | default('null', true) }}"
+  DB_SSL_CIPHER: "{{ snipe_it_config_db_ssl_cipher | default('null', true) }}"
+  DB_SSL_VERIFY_SERVER: "{{ snipe_it_config_db_ssl_verify_server | default('null', true) }}"
+  MAIL_MAILER: "{{ snipe_it_config_mail_mailer }}"
+  MAIL_HOST: "{{ snipe_it_config_mail_host }}"
+  MAIL_PORT: "{{ snipe_it_config_mail_port }}"
+  MAIL_USERNAME: "{{ snipe_it_config_mail_username }}"
+  MAIL_PASSWORD: "{{ snipe_it_config_mail_password }}"
+  MAIL_TLS_VERIFY_PEER: "{{ snipe_it_config_mail_tls_verify_peer }}"
+  MAIL_FROM_ADDR: "{{ snipe_it_config_mail_from_addr | default('null', true) }}"
+  MAIL_FROM_NAME: "{{ snipe_it_config_mail_from_name | default('null', true) }}"
+  MAIL_REPLYTO_ADDR: "{{ snipe_it_config_mail_replyto_addr | default('null', true) }}"
+  MAIL_REPLYTO_NAME: "{{ snipe_it_config_mail_replyto_name | default('null', true) }}"
+  MAIL_AUTO_EMBED_METHOD: "{{ snipe_it_config_mail_auto_embed_method }}"
+  MAIL_BACKUP_NOTIFICATION_DRIVER: "{{ snipe_it_config_mail_backup_notification_driver }}"
+  MAIL_BACKUP_NOTIFICATION_ADDRESS: "{{ snipe_it_config_mail_backup_notification_address }}"
+  SESSION_DRIVER: "{{ snipe_it_config_session_driver }}"
+  SESSION_LIFETIME: "{{ snipe_it_config_session_lifetime }}"
+  CACHE_DRIVER: "{{ snipe_it_config_cache_driver }}"
+  CACHE_PREFIX: "{{ snipe_it_config_cache_prefix }}"
+  QUEUE_DRIVER: "{{ snipe_it_config_queue_driver }}"
+  PRIVATE_FILESYSTEM_DISK: "{{ snipe_it_config_private_filesystem_disk }}"
+  PUBLIC_FILESYSTEM_DISK: "{{ snipe_it_config_public_filesystem_disk }}"
+  ALLOW_BACKUP_DELETE: "{{ snipe_it_config_allow_backup_delete }}"
+  ALLOW_DATA_PURGE: "{{ snipe_it_config_allow_data_purge }}"
+  IMAGE_LIB: "{{ snipe_it_config_image_lib }}"
+  LOG_CHANNEL: "{{ snipe_it_config_log_channel }}"
+  LOG_MAX_DAYS: "{{ snipe_it_config_log_max_days }}"
+  COOKIE_NAME: "{{ snipe_it_config_cookie_name }}"
+  COOKIE_DOMAIN: "{{ snipe_it_config_cookie_domain }}"
+  SECURE_COOKIES: "{{ snipe_it_config_secure_cookies }}"
+
+snipe_it_config: ~
+snipe_it_merged_config: >-2
+  {{ (snipe_it_base_config | default({}, true))
+    | combine((snipe_it_config | default({}, true)), recursive=True) }}
