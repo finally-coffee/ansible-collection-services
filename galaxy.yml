@@ -1,6 +1,6 @@
 namespace: finallycoffee
 name: services
-version: 0.1.6
+version: 0.1.7
 readme: README.md
 authors:
 - transcaffeine <transcaffeine@finally.coffee>
@@ -19,5 +19,5 @@ tags:
   - hedgedoc
   - jellyfin
   - vaultwarden
-  - snipe-it
+  - snipeit
   - docker
