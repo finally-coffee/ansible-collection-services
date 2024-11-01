@@ -26,14 +26,13 @@
     content: "{{ openproject_compose_overrides | default({}) | to_nice_yaml }}"
 
 - name: Ensure containers are pulled
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "{{ openproject_compose_project_path }}"
     project_name: "{{ openproject_compose_project_name }}"
-    pull: true
+    pull: "missing"
 
 - name: Ensure services are running
-  community.docker.docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "{{ openproject_compose_project_path }}"
     project_name: "{{ openproject_compose_project_name }}"
     state: "present"
-    build: false

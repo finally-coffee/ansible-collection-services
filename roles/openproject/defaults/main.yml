@@ -2,9 +2,9 @@
 openproject_base_path: "/opt/openproject"
 
 openproject_upstream_git_url: "https://github.com/opf/openproject-deploy.git"
-openproject_upstream_git_branch: "stable/13"
+openproject_upstream_git_branch: "stable/14"
 
-openproject_compose_project_path: "{{ openproject_base_path }}/compose"
+openproject_compose_project_path: "{{ openproject_base_path }}"
 openproject_compose_project_name: "openproject"
 openproject_compose_project_env_file: "{{ openproject_compose_project_path }}/.env"
 openproject_compose_project_override_file: "{{ openproject_compose_project_path }}/docker-compose.override.yml"
