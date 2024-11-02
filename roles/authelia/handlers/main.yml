@@ -4,5 +4,7 @@
   docker_container:
     name: "{{ authelia_container_name }}"
     state: started
-    restart: yes
+    restart: true
+    comparisons:
+      '*': ignore
   listen: restart-authelia

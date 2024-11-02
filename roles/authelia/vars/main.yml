@@ -170,7 +170,12 @@ authelia_config_access_control:
   default_policy: "{{ authelia_config_access_control_default_policy }}"
   networks: "{{ authelia_config_access_control_networks }}"
   rules: "{{ authelia_config_access_control_rules }}"
-authelia_config_session:
+authelia_config_session: >-2
+  {{ authelia_config_session_base
+    | combine(({'redis': authelia_config_session_redis}
+      if authelia_config_session_redis_host else {}), recursive=true)
+  }}
+authelia_config_session_base:
   name: "{{ authelia_config_session_name }}"
   domain: "{{ authelia_config_session_domain }}"
   same_site: "{{ authelia_config_session_same_site }}"
