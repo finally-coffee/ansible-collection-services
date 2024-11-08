@@ -1,0 +1,41 @@
+FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }} as builder
+
+# Enable health and metrics support
+ENV KC_HEALTH_ENABLED={{ keycloak_config_health_enabled | ternary('true', 'false') }}
+ENV KC_METRICS_ENABLED={{ keycloak_config_metrics_enabled | ternary('true', 'false') }}
+
+# Configure a database vendor
+ARG DB_VENDOR
+ENV KC_DB=$DB_VENDOR
+
+WORKDIR {{ keycloak_container_working_directory }}
+
+ADD ./providers/* providers/
+# Workaround to set correct mode on jar files
+USER root
+RUN chmod -R 0770 providers/*
+USER keycloak
+
+RUN {{ keycloak_container_working_directory }}/bin/kc.sh --verbose \
+{% for argument in keycloak_container_build_flags | dict2items(key_name='flag', value_name='value') %}
+  --{{- argument['flag'] -}}{{- argument['value'] | default(false, true) | ternary('=' + argument['value'], '') }} \
+{% endfor%}
+  build{% if keycloak_container_build_features | default([]) | length > 0 %} \
+{% endif %}
+{% if keycloak_container_build_features | default([]) | length > 0 %}
+  --features="{{ keycloak_container_build_features | join(',') }}"
+{% endif %}
+
+
+FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}
+COPY --from=builder {{ keycloak_container_working_directory }}/ {{ keycloak_container_working_directory }}/
+
+ENV KC_HOSTNAME={{ keycloak_config_hostname }}
+ENV KEYCLOAK_ADMIN={{ keycloak_config_admin_username }}
+ARG KC_ADMIN_PASSWORD
+{% if keycloak_version | split('.') | first | int > 21 %}
+ENV KEYCLOAK_ADMIN_PASSWORD=$KC_ADMIN_PASSWORD
+{% else %}
+ENV KEYCLOAK_PASSWORD=$KC_ADMIN_PASSWORD
+{% endif %}
+ENTRYPOINT ["{{ keycloak_container_working_directory }}/bin/kc.sh"]

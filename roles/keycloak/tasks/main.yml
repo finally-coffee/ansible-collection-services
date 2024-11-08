@@ -1,0 +1,78 @@
+---
+
+- name: Ensure build directory exists
+  ansible.builtin.file:
+    name: "{{ keycloak_container_build_directory }}"
+    state: directory
+    recurse: yes
+    mode: 0700
+  tags:
+    - keycloak-build-container
+
+- name: Ensure provider jars directory exists
+  ansible.builtin.file:
+    name: "{{ keycloak_provider_jars_directory }}"
+    state: directory
+    mode: 0775
+  tags:
+    - keycloak-build-container
+
+- name: Ensure Dockerfile is templated
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ keycloak_container_build_directory }}/Dockerfile"
+    mode: 0700
+  register: keycloak_buildfile_info
+  tags:
+    - keycloak-container
+    - keycloak-build-container
+
+- name: Ensure upstream Keycloak container image '{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}' is present
+  docker_image:
+    name: "{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}"
+    source: pull
+    state: present
+  register: keycloak_container_image_upstream_status
+  tags:
+    - keycloak-container
+    - keycloak-build-container
+
+- name: Ensure custom keycloak container image '{{ keycloak_container_image_name }}' is built
+  community.docker.docker_image:
+    name: "{{ keycloak_container_image_name }}"
+    build:
+      args:
+        DB_VENDOR: "{{ keycloak_container_database_vendor }}"
+        KC_ADMIN_PASSWORD: "{{ keycloak_config_admin_password }}"
+      dockerfile: "{{ keycloak_container_build_directory }}/Dockerfile"
+      path: "{{ keycloak_container_build_directory }}"
+    source: build
+    state: present
+    force_source: "{{ keycloak_buildfile_info.changed or keycloak_container_image_upstream_status.changed or (keycloak_force_rebuild_container | default(false))}}"
+  register: keycloak_container_image_status
+  tags:
+    - keycloak-container
+    - keycloak-build-container
+
+- name: Ensure keycloak container is running
+  community.docker.docker_container:
+    name: "{{ keycloak_container_name }}"
+    image: "{{ keycloak_container_image_name }}"
+    env: "{{ keycloak_container_env | default(omit, true) }}"
+    ports: "{{ keycloak_container_ports | default(omit, true) }}"
+    hostname: "{{ keycloak_container_hostname | default(omit) }}"
+    labels: "{{ keycloak_container_labels | default(omit, true) }}"
+    volumes: "{{ keycloak_container_volumes | default(omit, true) }}"
+    restart_policy: "{{ keycloak_container_restart_policy }}"
+    recreate: "{{ keycloak_container_force_recreate | default(false) or (keycloak_container_image_status.changed if keycloak_container_image_status is defined else false) }}"
+    etc_hosts: "{{ keycloak_container_etc_hosts | default(omit) }}"
+    state: started
+    command: >-2
+      start
+      --db-username {{ keycloak_database_username }}
+      --db-password {{ keycloak_database_password }}
+      --db-url jdbc:postgresql://{{ keycloak_database_hostname }}{{ keycloak_database_port | ternary(':' ~ keycloak_database_port, '') }}/{{ keycloak_database_database }}
+      {{ keycloak_container_extra_start_flags | default([]) | join(' ') }}
+      --optimized
+  tags:
+    - keycloak-container

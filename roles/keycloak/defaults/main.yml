@@ -1,0 +1,38 @@
+---
+keycloak_version: 24.0.4
+keycloak_container_name: keycloak
+
+keycloak_container_upstream_image_name: quay.io/keycloak/keycloak
+keycloak_container_image_name: "keycloak:{{ keycloak_version }}-custom"
+
+keycloak_container_database_vendor: postgres
+keycloak_base_path: /opt/keycloak
+keycloak_container_build_directory: "{{ keycloak_base_path }}/build"
+keycloak_container_build_jar_directory: providers
+keycloak_container_build_flags: {}
+keycloak_provider_jars_directory: "{{ keycloak_base_path }}/providers"
+keycloak_build_provider_jars_directory: "{{ keycloak_container_build_directory }}/{{ keycloak_container_build_jar_directory }}"
+
+keycloak_database_hostname: localhost
+keycloak_database_port: 5432
+keycloak_database_username: keycloak
+keycloak_database_password: ~
+keycloak_database_database: keycloak
+
+keycloak_container_env: {}
+keycloak_container_labels: ~
+keycloak_container_volumes: ~
+keycloak_container_restart_policy: unless-stopped
+keycloak_container_command: >-2
+  start
+  --db-username {{ keycloak_database_username }}
+  --db-password {{ keycloak_database_password }}
+  --db-url jdbc:postgresql://{{ keycloak_database_hostname }}:{{ keycloak_database_port }}/{{ keycloak_database_database }}
+  --optimized
+
+keycloak_config_health_enabled: true
+keycloak_config_metrics_enabled: true
+
+keycloak_config_hostname: localhost
+keycloak_config_admin_username: admin
+keycloak_config_admin_password: ~

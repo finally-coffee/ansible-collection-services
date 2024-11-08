@@ -23,6 +23,9 @@ concise area of concern.
 - [`jellyfin`](roles/jellyfin/README.md): Deploy [jellyfin.org](https://jellyfin.org),
   the free software media system for streaming stored media to any device.
 
+- [`keycloak`](roles/keycloak/README.md): Deploy [keycloak](https://www.keycloak.org/),
+  the open source identity and access management solution.
+
 - [`openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org)
   installation using the upstream provided docker-compose setup.
 

@@ -1,0 +1,13 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: keycloak
+  description: Deploy keycloak, the opensource identity and access management solution
+  galaxy_tags:
+    - keycloak
+    - sso
+    - oidc
+    - oauth2
+    - iam
+    - docker

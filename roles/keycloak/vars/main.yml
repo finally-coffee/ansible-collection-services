@@ -1,0 +1,3 @@
+---
+
+keycloak_container_working_directory: /opt/keycloak
