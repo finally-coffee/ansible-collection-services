@@ -1,5 +1,5 @@
 ---
-keycloak_version: 25.0.6
+keycloak_version: 26.0.5
 keycloak_container_name: keycloak
 
 keycloak_container_upstream_image_name: quay.io/keycloak/keycloak
