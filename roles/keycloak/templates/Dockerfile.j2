@@ -1,4 +1,4 @@
-FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }} as builder
+FROM {{ keycloak_container_image_upstream }}:{{ keycloak_version }} as builder
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED={{ keycloak_config_health_enabled | ternary('true', 'false') }}
@@ -27,7 +27,7 @@ RUN {{ keycloak_container_working_directory }}/bin/kc.sh --verbose \
 {% endif %}
 
 
-FROM {{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}
+FROM {{ keycloak_container_image_upstream }}:{{ keycloak_version }}
 COPY --from=builder {{ keycloak_container_working_directory }}/ {{ keycloak_container_working_directory }}/
 
 ENV KC_HOSTNAME={{ keycloak_config_hostname }}

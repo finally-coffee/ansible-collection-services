@@ -27,9 +27,9 @@
     - keycloak-container
     - keycloak-build-container
 
-- name: Ensure upstream Keycloak container image '{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}' is present
+- name: Ensure upstream Keycloak container image '{{ keycloak_container_image_upstream }}:{{ keycloak_version }}' is present
   docker_image:
-    name: "{{ keycloak_container_upstream_image_name }}:{{ keycloak_version }}"
+    name: "{{ keycloak_container_image_upstream }}:{{ keycloak_version }}"
     source: pull
     state: present
   register: keycloak_container_image_upstream_status

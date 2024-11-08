@@ -2,7 +2,17 @@
 keycloak_version: 26.0.5
 keycloak_container_name: keycloak
 
-keycloak_container_upstream_image_name: quay.io/keycloak/keycloak
+keycloak_container_image_upstream_registry: quay.io
+keycloak_container_image_upstream_namespace: keycloak
+keycloak_container_image_upstream_name: keycloak
+keycloak_container_image_upstream: >-2
+  {{
+    ([
+      keycloak_container_image_upstream_registry | default([]),
+      keycloak_container_image_upstream_namespace | default([]),
+      keycloak_container_image_upstream_name,
+    ] | flatten | join('/'))
+  }}
 keycloak_container_image_name: "keycloak:{{ keycloak_version }}-custom"
 
 keycloak_container_database_vendor: postgres
