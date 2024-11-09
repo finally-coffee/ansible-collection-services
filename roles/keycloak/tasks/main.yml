@@ -67,12 +67,6 @@
     recreate: "{{ keycloak_container_force_recreate | default(false) or (keycloak_container_image_status.changed if keycloak_container_image_status is defined else false) }}"
     etc_hosts: "{{ keycloak_container_etc_hosts | default(omit) }}"
     state: started
-    command: >-2
-      start
-      --db-username {{ keycloak_database_username }}
-      --db-password {{ keycloak_database_password }}
-      --db-url jdbc:postgresql://{{ keycloak_database_hostname }}{{ keycloak_database_port | ternary(':' ~ keycloak_database_port, '') }}/{{ keycloak_database_database }}
-      {{ keycloak_container_extra_start_flags | default([]) | join(' ') }}
-      --optimized
+    command: "{{ keycloak_container_command }}"
   tags:
     - keycloak-container

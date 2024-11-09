@@ -37,7 +37,10 @@ keycloak_container_command: >-2
   start
   --db-username {{ keycloak_database_username }}
   --db-password {{ keycloak_database_password }}
-  --db-url jdbc:postgresql://{{ keycloak_database_hostname }}:{{ keycloak_database_port }}/{{ keycloak_database_database }}
+  --db-url jdbc:postgresql://{{ keycloak_database_hostname }}{{ keycloak_database_port | ternary(':' ~ keycloak_database_port, '') }}/{{ keycloak_database_database }}
+  {{ keycloak_container_extra_start_flags | default([]) | join(' ') }}
+  --proxy-headers=xforwarded
+  --hostname {{ keycloak_config_hostname }}
   --optimized
 
 keycloak_config_health_enabled: true
