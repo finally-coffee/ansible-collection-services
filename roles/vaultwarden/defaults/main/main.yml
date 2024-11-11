@@ -1,6 +1,6 @@
 ---
 vaultwarden_user: vaultwarden
-vaultwarden_version: "1.32.3"
+vaultwarden_version: "1.32.4"
 
 vaultwarden_config_file: "/etc/vaultwarden/config.json"
 vaultwarden_config_directory: "{{ vaultwarden_config_file | dirname }}"
