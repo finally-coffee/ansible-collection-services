@@ -1,5 +1,5 @@
 ---
-authelia_version: "4.38.17"
+authelia_version: "4.38.18"
 authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
