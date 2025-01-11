@@ -4,6 +4,9 @@ authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
 
+authelia_state: present
+authelia_deployment_method: docker
+
 authelia_config_dir: "{{ authelia_base_dir }}/config"
 authelia_config_file: "{{ authelia_config_dir }}/config.yaml"
 authelia_data_dir: "{{ authelia_base_dir }}/data"
@@ -42,7 +45,8 @@ authelia_container_ports: ~
 authelia_container_networks: ~
 authelia_container_purge_networks: ~
 authelia_container_restart_policy: unless-stopped
-authelia_container_state: started
+authelia_container_state: >-2
+  {{ (authelia_state == 'present' | ternary('started', 'absent') }}
 
 authelia_container_listen_port: 9091
 authelia_tls_minimum_version: TLS1.2
