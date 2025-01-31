@@ -32,6 +32,7 @@ gitea_container_extra_labels: {}
 gitea_container_extra_ports: []
 gitea_container_extra_volumes: []
 gitea_container_state: started
+gitea_container_user: ~
 
 # container defaults
 gitea_container_base_volumes:

@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure gitea user '{{ gitea_user }}' is present
   ansible.builtin.user:
     name: "{{ gitea_user }}"
@@ -75,6 +74,7 @@
     published_ports: "{{ gitea_container_ports }}"
     restart_policy: "{{ gitea_container_restart_policy }}"
     state: "{{ gitea_container_state }}"
+    user: "{{ gitea_container_user | default(omit, true) }}"
 
 - name: Ensure given configuration is set in the config file
   ansible.builtin.ini_file:
