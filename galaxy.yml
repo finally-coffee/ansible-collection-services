@@ -1,13 +1,13 @@
 namespace: finallycoffee
 name: services
-version: "0.1.11"
+version: "0.1.12"
 readme: README.md
 authors:
 - transcaffeine <transcaffeine@finally.coffee>
 description: Various ansible roles useful for automating infrastructure
 dependencies:
-  "community.crypto": "^2.0.0"
-  "community.docker": "^3.0.0"
+  "community.crypto": "^2.22.0"
+  "community.docker": "^4.0.0"
 license_file: LICENSE.md
 build_ignore:
 - '*.tar.gz'
