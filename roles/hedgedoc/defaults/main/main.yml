@@ -1,6 +1,6 @@
 ---
 hedgedoc_user: hedgedoc
-hedgedoc_version: "1.10.0"
+hedgedoc_version: "1.10.1"
 
 hedgedoc_state: present
 hedgedoc_deployment_method: docker
