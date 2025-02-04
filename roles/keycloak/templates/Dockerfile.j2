@@ -10,7 +10,9 @@ ENV KC_DB=$DB_VENDOR
 
 WORKDIR {{ keycloak_container_working_directory }}
 
+{% if keycloak_container_image_add_local_providers | default(true) %}
 ADD ./providers/* providers/
+{% endif %}
 # Workaround to set correct mode on jar files
 USER root
 RUN chmod -R 0770 providers/*
