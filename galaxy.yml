@@ -8,6 +8,7 @@ description: Various ansible roles useful for automating infrastructure
 dependencies:
   "community.crypto": "^2.22.0"
   "community.docker": "^4.0.0"
+  "containers.podman": "^1.16.0"
 license_file: LICENSE.md
 build_ignore:
 - '*.tar.gz'
