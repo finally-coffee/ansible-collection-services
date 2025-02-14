@@ -1,0 +1,22 @@
+---
+- name: Ensure container image '{{ jellyfin_container_image_ref }}' is {{ jellyfin_state }}
+  containers.podman.podman_image:
+    name: "{{ jellyfin_container_image_ref }}"
+    state: "{{ jellyfin_state }}"
+    pull: "{{ (jellyfin_container_image_source == 'pull') | bool }}"
+    force: "{{ jellyfin_container_image_tag | default(false, true) }}"
+  register: jellyfin_container_image_pull_result
+  until: jellyfin_container_image_pull_result is succeeded
+  retries: 5
+  delay: 3
+
+- name: Ensure container '{{ jellyfin_container_name }}' is {{ jellyfin_container_state }}
+  containers.podman.podman_container:
+    name: "{{ jellyfin_container_name }}"
+    image: "{{ jellyfin_container_image_ref }}"
+    user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
+    labels: "{{ jellyfin_container_labels }}"
+    volumes: "{{ jellyfin_container_volumes }}"
+    network: "{{ jellyfin_container_networks | default(omit, True) }}"
+    restart_policy: "{{ jellyfin_container_restart_policy }}"
+    state: "{{ jellyfin_container_state }}"

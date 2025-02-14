@@ -2,6 +2,7 @@
 jellyfin_user: jellyfin
 jellyfin_version: "10.10.5"
 jellyfin_state: present
+jellyfin_deployment_method: docker
 
 jellyfin_base_path: /opt/jellyfin
 jellyfin_config_path: "{{ jellyfin_base_path }}/config"

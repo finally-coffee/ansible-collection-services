@@ -6,6 +6,13 @@
       states are {{ jellyfin_states | join(', ') }}.
   when: jellyfin_state not in jellyfin_states
 
+- name: Check if deployment method is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ jellyfin_deployment_method }}'. Supported
+      states are {{ jellyfin_deployment_methods | join(', ') }}.
+  when: jellyfin_deployment_method not in jellyfin_deployment_methods
+
 - name: Ensure jellyfin user '{{ jellyfin_user }}' is {{ jellyfin_state }}
   ansible.builtin.user:
     name: "{{ jellyfin_user }}"
@@ -23,25 +30,6 @@
     mode: "{{ item.mode }}"
   loop: "{{ jellyfin_host_directories }}"
 
-- name: Ensure container image '{{ jellyfin_container_image_ref }}' is {{ jellyfin_state }}
-  community.docker.docker_image:
-    name: "{{ jellyfin_container_image_ref }}"
-    state: "{{ jellyfin_state }}"
-    source: "{{ jellyfin_container_image_source }}"
-    force_source: "{{ jellyfin_container_image_tag | default(false, true) }}"
-  register: jellyfin_container_image_pull_result
-  until: jellyfin_container_image_pull_result is succeeded
-  retries: 5
-  delay: 3
-
-- name: Ensure container '{{ jellyfin_container_name }}' is {{ jellyfin_container_state }}
-  community.docker.docker_container:
-    name: "{{ jellyfin_container_name }}"
-    image: "{{ jellyfin_container_image_ref }}"
-    user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
-    labels: "{{ jellyfin_container_labels }}"
-    volumes: "{{ jellyfin_container_volumes }}"
-    networks: "{{ jellyfin_container_networks | default(omit, True) }}"
-    network_mode: "{{ jellyfin_container_network_mode }}"
-    restart_policy: "{{ jellyfin_container_restart_policy }}"
-    state: "{{ jellyfin_container_state }}"
+- name: Ensure jellyfin is deployed using {{ jellyfin_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ jellyfin_deployment_method }}.yml"

@@ -2,6 +2,9 @@
 jellyfin_states:
   - present
   - absent
+jellyfin_deployment_methods:
+  - docker
+  - podman
 
 jellyfin_container_base_volumes:
   - "{{ jellyfin_config_path }}:/config:z"
