@@ -1,0 +1,31 @@
+---
+- name: Ensure container image '{{ hedgedoc_container_image }}' is {{ hedgedoc_state }}
+  containers.podman.podman_image:
+    name: "{{ hedgedoc_container_image }}"
+    state: "{{ hedgedoc_state }}"
+    pull: "{{ (hedgedoc_container_image_source == 'pull') | bool }}"
+    force: >-2
+      {{ hedgedoc_container_force_source | default(
+        hedgedoc_container_image_tag | default(false, true), true) }}
+  register: hedgedoc_container_image_info
+  until: hedgedoc_container_image_info is success
+  retries: 5
+  delay: 3
+
+- name: Ensure container '{{ hedgedoc_container_name }}' is {{ hedgedoc_container_state }}
+  containers.podman.podman_container:
+    name: "{{ hedgedoc_container_name }}"
+    image: "{{ hedgedoc_container_image }}"
+    env: "{{ hedgedoc_container_env | default(omit, true) }}"
+    user: "{{ hedgedoc_container_user | default(omit, true) }}"
+    ports: "{{ hedgedoc_container_ports | default(omit, true) }}"
+    labels: "{{ hedgedoc_container_all_labels }}"
+    volumes: "{{ hedgedoc_container_all_volumes }}"
+    etc_hosts: "{{ hedgedoc_container_etc_hosts | default(omit, true) }}"
+    dns_servers: >-2
+      {{ hedgedoc_container_dns_servers | default(omit, true) }}
+    network_mode: >-2
+      {{ hedgedoc_container_network_mode | default(omit, true) }}
+    restart_policy: >-2
+      {{ hedgedoc_container_restart_policy | default(omit, true) }}
+    state: "{{ hedgedoc_container_state }}"
