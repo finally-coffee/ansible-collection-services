@@ -1,0 +1,22 @@
+---
+- name: Ensure container image '{{ vaultwarden_container_image }}' is {{ vaultwarden_state }}
+  containers.podman.podman_image:
+    name: "{{ vaultwarden_container_image }}"
+    state: "{{ vaultwarden_state }}"
+    pull: "{{ (vaultwarden_container_image_source == 'pull') | bool }}"
+    force: "{{ vaultwarden_container_image_force_source }}"
+
+- name: Ensure container '{{ vaultwarden_container_name }}' is {{ vaultwarden_container_state }}
+  containers.podman.podman_container:
+    name: "{{ vaultwarden_container_name }}"
+    image: "{{ vaultwarden_container_image }}"
+    env: "{{ vaultwarden_container_env | default(omit, true) }}"
+    user: "{{ vaultwarden_container_user | default(omit, true) }}"
+    ports: "{{ vaultwarden_container_ports | default(omit, true) }}"
+    labels: "{{ vaultwarden_container_labels | default(omit, true) }}"
+    volumes: "{{ vaultwarden_container_volumes }}"
+    network: "{{ vaultwarden_container_networks | default(omit, true) }}"
+    etc_hosts: "{{ vaultwarden_container_etc_hosts | default(omit, true) }}"
+    dns_servers: "{{ vaultwarden_container_dns_servers | default(omit, true) }}"
+    restart_policy: "{{ vaultwarden_container_restart_policy | default(omit, true) }}"
+    state: "{{ vaultwarden_container_state | default(omit, true) }}"

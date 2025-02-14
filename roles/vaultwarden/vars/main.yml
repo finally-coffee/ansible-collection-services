@@ -4,6 +4,7 @@ vaultwarden_states:
   - absent
 vaultwarden_deployment_methods:
   - docker
+  - podman
 vaultwarden_required_variables:
   - vaultwarden_config_domain
 vaultwarden_conditionally_required_variables:
