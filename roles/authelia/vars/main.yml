@@ -1,4 +1,9 @@
 ---
+authelia_states:
+  - "present"
+  - "absent"
+authelia_deployment_methods:
+  - "docker"
 
 authelia_run_user: "{{ (authelia_user_info.uid) if authelia_user_info is defined else authelia_user }}"
 authelia_run_group: "{{ (authelia_user_info.group) if authelia_user_info is defined else authelia_user }}"

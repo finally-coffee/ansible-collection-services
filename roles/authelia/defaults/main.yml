@@ -3,6 +3,8 @@ authelia_version: "4.38.19"
 authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
+authelia_state: present
+authelia_deployment_method: docker
 
 authelia_config_dir: "{{ authelia_base_dir }}/config"
 authelia_config_file: "{{ authelia_config_dir }}/config.yaml"

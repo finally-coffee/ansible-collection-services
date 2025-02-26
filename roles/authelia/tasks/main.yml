@@ -1,16 +1,30 @@
 ---
+- name: Check for valid state
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ authelia_state }}'.
+      Supported states are {{ authelia_states | join(', ') }}.
+  when: authelia_state not in authelia_states
 
-- name: Ensure user {{ authelia_user }} exists
+- name: Check for valid authelia deployment method
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported deployment method '{{ authelia_deployment_method }}'.
+      Supported states are {{ authelia_deployment_methods | join(', ') }}.
+  when: authelia_deployment_method not in authelia_deployment_methods
+
+- name: Ensure user {{ authelia_user }} is {{ authelia_state }}
   ansible.builtin.user:
     name: "{{ authelia_user }}"
-    state: present
+    state: "{{ authelia_state }}"
     system: true
+    create_home: false
   register: authelia_user_info
 
-- name: Ensure host directories are created with correct permissions
+- name: Ensure host directories are {{ authelia_state }}
   ansible.builtin.file:
     path: "{{ item.path }}"
-    state: directory
+    state: "{{ (authelia_state == 'present') | ternary('directory', 'absent') }}"
     owner: "{{ item.owner | default(authelia_user) }}"
     group: "{{ item.group | default(authelia_user) }}"
     mode: "{{ item.mode | default('0750') }}"
@@ -25,7 +39,7 @@
     - path: "{{ authelia_asset_dir }}"
       mode: "0750"
 
-- name: Ensure config file is generated
+- name: Ensure config file is {{ authelia_state }}
   ansible.builtin.copy:
     content: "{{ authelia_config | to_nice_yaml(indent=2, width=10000) }}"
     dest: "{{ authelia_config_file }}"
@@ -33,61 +47,8 @@
     group: "{{ authelia_run_group }}"
     mode: "0640"
   notify: restart-authelia
+  when: authelia_state == 'present'
 
-- name: Ensure sqlite database file exists before mounting it
-  ansible.builtin.file:
-    path: "{{ authelia_sqlite_storage_file }}"
-    state: touch
-    owner: "{{ authelia_run_user }}"
-    group: "{{ authelia_run_group }}"
-    mode: "0640"
-    access_time: preserve
-    modification_time: preserve
-  when: authelia_config_storage_local_path | default(false, true)
-
-- name: Ensure user database exists before mounting it
-  ansible.builtin.file:
-    path: "{{ authelia_user_storage_file }}"
-    state: touch
-    owner: "{{ authelia_run_user }}"
-    group: "{{ authelia_run_group }}"
-    mode: "0640"
-    access_time: preserve
-    modification_time: preserve
-  when: authelia_config_authentication_backend_file_path | default(false, true)
-
-- name: Ensure notification reports file exists before mounting it
-  ansible.builtin.file:
-    path: "{{ authelia_notification_storage_file }}"
-    state: touch
-    owner: "{{ authelia_run_user }}"
-    group: "{{ authelia_run_group }}"
-    mode: "0640"
-    access_time: preserve
-    modification_time: preserve
-  when: authelia_config_notifier_filesystem_filename | default(false, true)
-
-- name: Ensure authelia container image is present
-  community.docker.docker_image:
-    name: "{{ authelia_container_image_ref }}"
-    state: present
-    source: pull
-    force_source: "{{ authelia_container_image_force_pull }}"
-  register: authelia_container_image_info
-
-- name: Ensure authelia container is running
-  community.docker.docker_container:
-    name: "{{ authelia_container_name }}"
-    image: "{{ authelia_container_image_ref }}"
-    env: "{{ authelia_container_env }}"
-    user: "{{ authelia_run_user }}:{{ authelia_run_group }}"
-    ports: "{{ authelia_container_ports | default(omit, true) }}"
-    labels: "{{ authelia_container_labels }}"
-    volumes: "{{ authelia_container_volumes }}"
-    networks: "{{ authelia_container_networks | default(omit, true) }}"
-    etc_hosts: "{{ authelia_container_etc_hosts | default(omit, true) }}"
-    purge_networks: "{{ authelia_container_purge_networks | default(omit, true)}}"
-    restart_policy: "{{ authelia_container_restart_policy }}"
-    recreate: "{{ authelia_container_recreate | default(omit, true) }}"
-    state: "{{ authelia_container_state }}"
-  register: authelia_container_info
+- name: Deploy authelia using {{ authelia_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ authelia_deployment_method }}.yml"
