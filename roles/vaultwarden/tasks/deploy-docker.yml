@@ -20,3 +20,5 @@
     dns_servers: "{{ vaultwarden_container_dns_servers | default(omit, true) }}"
     restart_policy: "{{ vaultwarden_container_restart_policy | default(omit, true) }}"
     state: "{{ vaultwarden_container_state | default(omit, true) }}"
+    comparisons:
+      'env': 'strict'
