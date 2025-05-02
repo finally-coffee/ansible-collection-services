@@ -1,0 +1,7 @@
+---
+- name: Configure and run phpldapadmin
+  hosts: "{{ phpldapadmin_hosts | default('phpldapadmin', true) }}"
+  become: "{{ phpldapadmin_become | default(false) }}"
+  gather_facts: "{{ phpldapadmin_gather_facts | default(false) }}"
+  roles:
+    - role: finallycoffee.services.phpldapadmin

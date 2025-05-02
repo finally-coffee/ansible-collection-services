@@ -1,0 +1,6 @@
+---
+phpldapadmin_states:
+  - "present"
+  - "absent"
+phpldapadmin_deployment_methods:
+  - "docker"

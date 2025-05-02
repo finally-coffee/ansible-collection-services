@@ -1,0 +1,27 @@
+---
+- name: Ensure phpldapadmin container image '{{ phpldapadmin_container_image }}' is {{ phpldapadmin_state }}
+  community.docker.docker_image:
+    name: "{{ phpldapadmin_container_image }}"
+    state: "{{ phpldapadmin_state }}"
+    source: "{{ phpldapadmin_container_image_source }}"
+    force_source: "{{ phpldapadmin_container_image_force_source }}"
+
+- name: Ensure phpldapadmin container '{{ phpldapadmin_container_name }}' is {{ phpldapadmin_container_state }}
+  community.docker.docker_container:
+    name: "{{ phpldapadmin_container_name }}"
+    image: "{{ phpldapadmin_container_image }}"
+    env: "{{ phpldapadmin_container_env | default(omit, true) }}"
+    user: "{{ phpldapadmin_container_user | default(omit, true) }}"
+    ports: "{{ phpldapadmin_container_ports | default(omit, true) }}"
+    labels: "{{ phpldapadmin_container_labels | default(omit, true) }}"
+    volumes: "{{ phpldapadmin_container_volumes | default(omit, true) }}"
+    networks: "{{ phpldapadmin_container_networks | default(omit, true) }}"
+    network_mode: "{{ phpldapadmin_container_network_mode | default(omit, true) }}"
+    dns_servers: "{{ phpldapadmin_container_dns_servers | default(omit, true) }}"
+    etc_hosts: "{{ phpldapadmin_container_etc_hosts | default(omit, true) }}"
+    memory: "{{ phpldapadmin_container_memory | default(omit, true) }}"
+    memory_swap: "{{ phpldapadmin_container_memory_swap | default(omit, true) }}"
+    memory_reservation: >-2
+      {{ phpldapadmin_container_memory_reservation | default(omit, true) }}
+    restart_policy: "{{ phpldapadmin_container_restart_policy | default(omit, true) }}"
+    state: "{{ phpldapadmin_container_state }}"

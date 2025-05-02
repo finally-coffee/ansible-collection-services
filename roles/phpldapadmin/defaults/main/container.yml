@@ -1,0 +1,39 @@
+---
+phpldapadmin_container_name: phpldapadmin
+phpldapadmin_container_image_registry: docker.io
+phpldapadmin_container_image_namespace: phpldapadmin
+phpldapadmin_container_image_name: phpldapadmin
+phpldapadmin_container_image_repository: >-2
+  {{
+    [
+      phpldapadmin_container_image_registry | default([], true),
+      phpldapadmin_container_image_namespace | default([], true),
+      phpldapadmin_container_image_name
+    ] | flatten | join('/')
+  }}
+phpldapadmin_container_image: >-2
+  {{
+    [
+      phpldapadmin_container_image_repository,
+      phpldapadmin_container_image_tag | default(phpldapadmin_version, true)
+    ] | join(':')
+  }}
+phpldapadmin_container_image_tag: ~
+phpldapadmin_container_image_source: pull
+phpldapadmin_container_image_force_source: >-2
+  {{ phpldapadmin_container_image_tag | default(false, true) }}
+phpldapadmin_container_env: ~
+phpldapadmin_container_user: ~
+phpldapadmin_container_ports: ~
+phpldapadmin_container_labels: ~
+phpldapadmin_container_volumes: ~
+phpldapadmin_container_networks: ~
+phpldapadmin_container_network_mode: ~
+phpldapadmin_container_dns_servers: ~
+phpldapadmin_container_etc_hosts: ~
+phpldapadmin_container_memory: ~
+phpldapadmin_container_memory_swap: ~
+phpldapadmin_container_memory_reservation: ~
+phpldapadmin_container_restart_policy: "on-failure"
+phpldapadmin_container_state: >-2
+  {{ (phpldapadmin_state == 'present') | ternary('started', 'absent') }}

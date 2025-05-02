@@ -1,0 +1,18 @@
+---
+- name: Ensure 'phpldapadmin_state' is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported state '{{ phpldapadmin_state }}'!
+      Supported states are {{ phpldapadmin_states | join(', ') }}
+  when: phpldapadmin_state not in phpldapadmin_states
+
+- name: Ensure 'phpldapadmin_deployment_method' is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported deployment method '{{ phpldapadmin_deployment_method }}'!
+      Supported deployment methods are {{ phpldapadmin_deployment_methods | join(', ') }}
+  when: phpldapadmin_deployment_method not in phpldapadmin_deployment_methods
+
+- name: Deploy using {{ phpldapadmin_deployment_method }}
+  ansible.builtin.import_tasks:
+    file: "deploy-{{ phpldapadmin_deployment_method }}.yml"
