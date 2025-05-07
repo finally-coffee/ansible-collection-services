@@ -1,6 +1,6 @@
 ---
 snipe_it_container_image_registry: docker.io
-snipe_it_container_image_namespace: 'grokability'
+snipe_it_container_image_namespace: 'snipe'
 snipe_it_container_image_name: 'snipe-it'
 snipe_it_container_image_tag: ~
 snipe_it_container_image_flavour: alpine
