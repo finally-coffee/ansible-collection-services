@@ -1,5 +1,5 @@
 ---
-authelia_version: "4.39.1"
+authelia_version: "4.39.2"
 authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
@@ -15,7 +15,7 @@ authelia_notification_storage_file: "{{ authelia_data_dir }}/notifications.txt"
 authelia_user_storage_file: "{{ authelia_data_dir }}/user_database.yml"
 
 authelia_container_name: authelia
-authelia_container_image_server: docker.io
+authelia_container_image_server: ghcr.io
 authelia_container_image_namespace: authelia
 authelia_container_image_name: authelia
 authelia_container_image: >-2
