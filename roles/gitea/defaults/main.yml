@@ -1,5 +1,5 @@
 ---
-gitea_version: "1.24.1"
+gitea_version: "1.24.2"
 gitea_user: git
 gitea_run_user: "{{ gitea_user }}"
 gitea_base_path: "/opt/gitea"
