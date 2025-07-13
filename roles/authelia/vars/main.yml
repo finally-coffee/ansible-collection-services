@@ -25,7 +25,6 @@ authelia_container_base_labels:
 authelia_config: "{{ authelia_base_config | combine(authelia_extra_config, recursive=True) }}"
 authelia_top_level_config:
   theme: "{{ authelia_config_theme }}"
-  jwt_secret: "{{ authelia_config_jwt_secret }}"
   log: "{{ authelia_config_log }}"
   telemetry: "{{ authelia_config_telemetry }}"
   totp: "{{ authelia_config_totp }}"
@@ -39,12 +38,11 @@ authelia_top_level_config:
   regulation: "{{ authelia_config_regulation }}"
   storage: "{{ authelia_config_storage }}"
   notifier: "{{ authelia_config_notifier }}"
+  identity_validation: "{{ authelia_config_identity_validation }}"
 
 authelia_base_config: >-2
   {{
     authelia_top_level_config
-    | combine({"default_redirection_url": authelia_config_default_redirection_url}
-      if authelia_config_default_redirection_url | default(false, true) else {})
     | combine(({"server": authelia_config_server })
       | combine({"tls": authelia_config_server_tls}
         if authelia_config_server_tls_key | default(false, true) else {}))
@@ -99,7 +97,10 @@ authelia_config_webauthn:
   timeout: "{{ authelia_config_webauthn_timeout }}"
   display_name: "{{ authelia_config_webauthn_display_name }}"
   attestation_conveyance_preference: "{{ authelia_config_webauthn_attestation_conveyance_preference }}"
-  user_verification: "{{ authelia_config_webauthn_user_verification }}"
+  selection_criteria:
+    attachment: "{{ authelia_config_webauthn_selection_criteria_attachment }}"
+    discoverability: "{{ authelia_config_webauthn_selection_criteria_discoverability }}"
+    user_verification: "{{ authelia_config_webauthn_selection_criteria_user_verification }}"
 authelia_config_duo_api:
   hostname: "{{ authelia_config_duo_api_hostname }}"
   integration_key: "{{ authelia_config_duo_api_integration_key }}"
@@ -128,7 +129,7 @@ authelia_config_authentication_backend_password_reset:
   disable: "{{ authelia_config_authentication_backend_password_reset_disable }}"
 authelia_config_authentication_backend_ldap:
   implementation: "{{ authelia_config_authentication_backend_ldap_implementation }}"
-  url: "{{ authelia_config_authentication_backend_ldap_url }}"
+  address: "{{ authelia_config_authentication_backend_ldap_address }}"
   timeout: "{{ authelia_config_authentication_backend_ldap_timeout }}"
   start_tls: "{{ authelia_config_authentication_backend_ldap_start_tls }}"
   tls:
@@ -182,12 +183,12 @@ authelia_config_session: >-2
   }}
 authelia_config_session_base:
   name: "{{ authelia_config_session_name }}"
-  domain: "{{ authelia_config_session_domain }}"
   same_site: "{{ authelia_config_session_same_site }}"
   secret: "{{ authelia_config_session_secret }}"
   expiration: "{{ authelia_config_session_expiration }}" 
   inactivity: "{{ authelia_config_session_inactivity }}"
   remember_me: "{{ authelia_config_session_remember_me }}"
+  cookies: "{{ authelia_config_session_cookies }}"
 authelia_config_session_redis: >-2
   {{
     {
@@ -274,3 +275,9 @@ authelia_config_notifier_smtp:
   tls:
     skip_verify: "{{ authelia_config_notifier_smtp_tls_skip_verify }}"
     minimum_version: "{{ authelia_config_notifier_smtp_tls_minimum_version }}"
+authelia_config_identity_validation:
+  reset_password: "{{ authelia_config_identity_validation_reset_password }}"
+authelia_config_identity_validation_reset_password:
+  jwt_secret: "{{ authelia_config_identity_validation_reset_password_jwt_secret }}"
+  jwt_lifespan: "{{ authelia_config_identity_validation_reset_password_jwt_lifespan }}"
+  jwt_algorithm: "{{ authelia_config_identity_validation_reset_password_jwt_algorithm }}"
