@@ -1,0 +1,41 @@
+---
+unifi_controller_container_name: "unifi-controller"
+unifi_controller_container_image_registry: "docker.io"
+unifi_controller_container_image_namespace: "jacobalberty"
+unifi_controller_container_image_repository: "unifi"
+unifi_controller_container_image_tag: ~
+unifi_controller_container_image_name: >-2
+  {{ [
+    unifi_controller_container_image_registry | default([]),
+    unifi_controller_container_image_namespace | default([]),
+    unifi_controller_container_image_repository
+  ] | flatten | join('/') }}
+unifi_controller_container_image: >-2
+  {{ [
+    unifi_controller_container_image_name,
+    unifi_controller_container_image_tag | default('v' + unifi_controller_version, true)
+  ] | join(':') }}
+unifi_controller_container_image_source: "pull"
+unifi_controller_container_image_force_source: >-2
+  {{ unifi_controller_container_image_tag | default(false, true) | bool }}
+unifi_controller_container_image_pull: >-2
+  {{ unifi_controller_container_image_source == 'pull' }}
+unifi_controller_container_image_force_pull: >-2
+  {{ unifi_controller_container_image_pull and unifi_controller_container_image_force_source }}
+unifi_controller_container_ports:
+  - "{{ unifi_controller_bind_ip }}:8080:8080/tcp" # HTTP: device + app communication
+  - "{{ unifi_controller_bind_ip }}:8443:8443/tcp" # HTTPS: app web page + API
+  - "{{ unifi_controller_bind_ip }}:1900:1900/udp" # SSDP: layer 2 discovery
+  - "{{ unifi_controller_bind_ip }}:3478:3478/udp" # STUN: device adoption and communication
+  - "{{ unifi_controller_bind_ip }}:10001:10001/udp" # device discovery (during adoption)
+unifi_controller_container_user: >-2
+  {{ unifi_controller_run_uid }}:{{ unifi_controller_run_gid }}
+unifi_controller_container_restart_policy: "on-failure"
+unifi_controller_container_default_volumes:
+  - "{{ unifi_controller_base_path }}:/unifi:rw"
+unifi_controller_container_volumes: []
+unifi_controller_container_merged_volumes: >-2
+  {{ unifi_controller_container_default_volumes | default([])
+  + unifi_controller_container_volumes | default([]) }}
+unifi_controller_container_state: >-2
+  {{ (unifi_controller_state == 'present') | ternary('started', 'absent') }}

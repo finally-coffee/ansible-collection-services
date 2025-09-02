@@ -1,0 +1,7 @@
+---
+unifi_controller_states:
+  - "present"
+  - "absent"
+unifi_controller_deployment_methods:
+  - "docker"
+  - "podman"
