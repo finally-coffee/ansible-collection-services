@@ -1,0 +1,8 @@
+---
+unifi_controller_user: unifi
+unifi_controller_user_create_home: false
+unifi_controller_user_system: true
+unifi_controller_run_uid: >-2
+  {{ unifi_controller_user_info.uid | default(unifi_controller_user) }}
+unifi_controller_run_gid: >-2
+  {{ unifi_controller_user_info.group | default(unifi_controller_user) }}

@@ -1,0 +1,9 @@
+---
+unifi_controller_version: "9.4.19"
+unifi_controller_base_path: "/var/lib/unifi-controller"
+unifi_controller_log_path: "{{ unifi_controller_base_path }}/log"
+unifi_controller_data_path: "{{ unifi_controller_base_path }}/data"
+unifi_controller_bind_ip: "[::]"
+
+unifi_controller_state: "present"
+unifi_controller_deployment_method: "docker"

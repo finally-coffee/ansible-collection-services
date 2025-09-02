@@ -1,0 +1,18 @@
+---
+- name: Ensure container image '{{ unifi_controller_container_image }}' is {{ unifi_controller_state }}
+  community.docker.docker_image:
+    name: "{{ unifi_controller_container_image }}"
+    state: "{{ unifi_controller_state }}"
+    source: "{{ unifi_controller_container_image_source }}"
+    force_source: "{{ unifi_controller_container_image_force_source }}"
+
+- name: Ensure container '{{ unifi_controller_container_name }}' is {{ unifi_controller_container_state }}
+  community.docker.docker_container:
+    name: "{{ unifi_controller_container_name }}"
+    image: "{{ unifi_controller_container_image }}"
+    env: "{{ unifi_controller_container_env | default(omit, true) }}"
+    user: "{{ unifi_controller_container_user }}"
+    ports: "{{ unifi_controller_container_ports }}"
+    volumes: "{{ unifi_controller_container_merged_volumes }}"
+    restart_policy: "{{ unifi_controller_container_restart_policy }}"
+    state: "{{ unifi_controller_container_state }}"

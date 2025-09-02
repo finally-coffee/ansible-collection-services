@@ -1,0 +1,21 @@
+---
+- import_playbook: finallycoffee.base.lego_certificate
+  when: unifi_controller_enable_lego_certificate | default(false) | bool
+  vars:
+    target_become: "{{ unifi_controller_become | default(false) }}"
+    target_hosts: "{{ unifi_controller_hosts | default('unifi_controller') }}"
+    target_gather_facts: "{{ unifi_controller_gather_facts | default(false) }}"
+    target_domains:
+      - "{{ unifi_controller_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ unifi_controller_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ unifi_controller_dns_records | default([]) }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+
+- name: Deploy unifi controller
+  hosts: "{{ unifi_controller_hosts | default('unifi_controller') }}"
+  become: "{{ unifi_controller_become | default(false) }}"
+  gather_facts: "{{ unifi_controller_gather_facts | default(false) }}"
+  roles:
+    - role: finallycoffee.services.unifi_controller

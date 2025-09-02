@@ -1,0 +1,11 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: unifi_controller
+  description: Ansible role to deploy unifi (network) controller in a container
+  galaxy_tags:
+    - unifi
+    - unifi_controller
+    - docker
+    - podman

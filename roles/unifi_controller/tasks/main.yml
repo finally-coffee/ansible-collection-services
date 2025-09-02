@@ -1,0 +1,18 @@
+---
+- name: Ensure unifi controller run user '{{ unifi_controller_user }}' is {{ unifi_controller_state }}
+  ansible.builtin.user:
+    name: "{{ unifi_controller_user }}"
+    state: "{{ unifi_controller_state }}"
+  register: unifi_controller_user_info
+
+- name: Ensure unifi controller base path '{{ unifi_controller_base_path }}' is {{ unifi_controller_state }}
+  ansible.builtin.file:
+    path: "{{ unifi_controller_base_path }}"
+    state: "{{ (unifi_controller_state == 'present') | ternary('directory', 'absent') }}"
+    owner: "{{ unifi_controller_run_uid }}"
+    group: "{{ unifi_controller_run_gid }}"
+    mode: "0755"
+
+- name: Deploy unifi controller with {{ unifi_controller_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ unifi_controller_deployment_method }}.yml"
