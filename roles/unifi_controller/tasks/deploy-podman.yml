@@ -1,0 +1,17 @@
+---
+- name: Ensure container image '{{ unifi_controller_container_image }}' is {{ unifi_controller_state }}
+  containers.podman.podman_image:
+    name: "{{ unifi_controller_container_image }}"
+    state: "{{ unifi_controller_state }}"
+    pull: "{{ unifi_controller_container_image_pull }}"
+    force: "{{ unifi_controller_container_image_force_pull }}"
+
+- name: Ensure container '{{ unifi_controller_container_name }}' is {{ unifi_controller_container_state }}
+  containers.podman.podman_container:
+    name: "{{ unifi_controller_container_name }}"
+    image: "{{ unifi_controller_container_image }}"
+    user: "{{ unifi_controller_container_user }}"
+    ports: "{{ unifi_controller_container_ports }}"
+    volumes: "{{ unifi_controller_container_merged_volumes }}"
+    restart_policy: "{{ unifi_controller_container_restart_policy }}"
+    state: "{{ unifi_controller_container_state }}"
