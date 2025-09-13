@@ -1,0 +1,7 @@
+---
+pretix_user: "pretix"
+pretix_user_system: true
+pretix_user_create_home: false
+
+pretix_user_id: "{{ pretix_user_info.uid | default(pretix_user) }}"
+pretix_group_id: "{{ pretix_user_info.group | default(pretix_user) }}"

@@ -1,0 +1,10 @@
+---
+- name: Ensure configuration file is written
+  ansible.builtin.copy:
+    dest: "{{ pretix_config_file }}"
+    content: "{{ pretix_config_file_content }}"
+    owner: "{{ pretix_config_file_owner }}"
+    group: "{{ pretix_config_file_group }}"
+    mode: "{{ pretix_config_file_mode }}"
+  when: pretix_state == 'present'
+  register: pretix_config_file_info

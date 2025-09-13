@@ -1,0 +1,5 @@
+---
+- name: Ensure pretix is deployed using {{ pretix_deployment_method }}
+  ansible.builtin.include_tasks:
+    file: "deploy-{{ pretix_deployment_method }}.yml"
+  when: pretix_state == 'present'

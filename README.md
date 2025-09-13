@@ -29,6 +29,8 @@ concise area of concern.
 - [`openproject`](roles/openproject/README.md): Deploys an [openproject.org](https://www.openproject.org)
   installation using the upstream provided docker-compose setup.
 
+- [`pretix`](roles/pretix/README.md): Deploy [pretix](https://pretix.eu), the open source online ticketing solution.
+
 - [`snipe_it`](roles/snipe_it/README.md): Deploys [Snipe-IT](https://snipeitapp.com/),
   the free and open-source IT asset (and license) management with a powerful REST API
 

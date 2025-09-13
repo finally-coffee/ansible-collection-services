@@ -1,0 +1,6 @@
+---
+- name: Ensure pretix systemd service is restarted
+  listen: pretix_restart
+  ansible.builtin.systemd_service:
+    name: "{{ pretix_systemd_service_name }}"
+    state: "restarted"

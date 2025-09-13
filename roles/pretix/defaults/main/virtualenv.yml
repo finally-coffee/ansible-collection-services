@@ -1,0 +1,11 @@
+---
+pretix_virtualenv_state: "{{ pretix_state }}"
+pretix_virtualenv_packages:
+  - "pip"
+  - "setuptools"
+  - "wheel"
+  - "gunicorn"
+  - "pretix=={{ pretix_version }}"
+
+pretix_virtualenv_site_packages: false
+pretix_virtualenv_command: "python3 -m venv"

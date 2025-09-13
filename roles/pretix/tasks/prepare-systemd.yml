@@ -1,0 +1,61 @@
+---
+- name: Ensure ansible facts are collected
+  ansible.builtin.setup:
+    gather_subset:
+      - "!all"
+      - "pkg_mgr"
+      - "distribution"
+      - "distribution_release"
+      - "distribution_version"
+      - "distribution_major_version"
+
+- name: Ensure system packages are present (apt)
+  ansible.builtin.apt:
+    name: "{{ package }}"
+    state: "{{ pretix_state }}"
+  loop: "{{ pretix_packages[ansible_distribution | lower][ansible_distribution_major_version] }}"
+  loop_control:
+    loop_var: "package"
+  when: ansible_facts['pkg_mgr'] == 'apt'
+
+# TODO: add pretix worker and cron
+- name: Ensure systemd unit {{ pretix_systemd_unit_name }} is {{ pretix_state }}
+  ansible.builtin.template:
+    src: "pretix.service.j2"
+    dest: "{{ pretix_systemd_unit_file_path }}"
+  register: pretix_systemd_unit_info
+  notify:
+    - pretix_restart
+
+- name: Ensure systemd unit {{ pretix_worker_systemd_unit_name }} is {{ pretix_state }}
+  ansible.builtin.template:
+    src: "pretix.service.j2"
+    dest: "{{ pretix_worker_systemd_unit_file_path }}"
+  register: pretix_worker_systemd_unit_info
+  vars:
+    pretix_systemd_service_exec_start: "{{ pretix_worker_systemd_service_exec_start }}"
+    pretix_systemd_service_description: "{{ pretix_worker_systemd_service_description }}"
+
+- name: Ensure systemd unit {{ pretix_cron_systemd_service_name }} is {{ pretix_state }}
+  ansible.builtin.template:
+    src: "pretix.service.j2"
+    dest: "{{ pretix_cron_systemd_unit_file_path }}"
+  register: pretix_cron_systemd_unit_info
+  vars:
+    pretix_systemd_service_exec_start: "{{ pretix_cron_systemd_service_exec_start }}"
+    pretix_systemd_service_description: "{{ pretix_cron_systemd_service_description }}"
+
+- name: Ensure systemd timer unit {{ pretix_cron_systemd_timer_name }} is {{ pretix_state }}
+  ansible.builtin.template:
+    src: "pretix-cron.timer.j2"
+    dest: "{{ pretix_cron_systemd_timer_file_path }}"
+  register: pretix_cron_systemd_timer_info
+
+- name: Ensure systemd is reloaded
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  when: >-2
+    pretix_systemd_unit_info.changed
+    or pretix_worker_systemd_unit_info.changed
+    or pretix_cron_systemd_unit_info.changed
+    or pretix_cron_systemd_timer_info.changed

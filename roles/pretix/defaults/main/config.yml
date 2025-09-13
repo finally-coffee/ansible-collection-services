@@ -1,0 +1,86 @@
+---
+pretix_config_instance_name: "My pretix installation"
+pretix_config_url: "https://pretix.example.org"
+pretix_config_currency: "EUR"
+pretix_config_data_dir: "{{ pretix_data_dir }}"
+pretix_config_trust_x_forwarded_for: "on"
+pretix_config_trust_x_forwarded_proto: "on"
+
+pretix_config_wsgi_name: "pretix"
+pretix_config_wsgi_workers: 4
+pretix_config_wsgi_max_requests: 100
+pretix_config_wsgi_log_level: "info"
+pretix_config_wsgi_bind_addr: "127.0.0.1:8345"
+pretix_config_worker_log_level: "{{ pretix_config_wsgi_log_level }}"
+
+pretix_config_database_backend: postgresql
+pretix_config_database_name: pretix
+pretix_config_database_user: pretix
+pretix_config_database_password: ~
+pretix_config_database_host: ""
+
+pretix_config_mail_host: ~
+pretix_config_mail_from: "tickets@example.org"
+pretix_config_mail_user: ~
+pretix_config_mail_password: ~
+pretix_config_mail_tls: true
+pretix_config_mail_ssl: false
+
+pretix_config_redis_location: ~
+pretix_config_redis_sessions: true
+
+pretix_config_celery_backend: ~
+pretix_config_celery_broker: ~
+
+pretix_app_config:
+  url: "{{ pretix_config_url }}"
+  instance_name: "{{ pretix_config_instance_name }}"
+  datadir: "{{ pretix_config_data_dir }}"
+  trust_x_forwarded_for: "{{ pretix_config_trust_x_forwarded_for }}"
+  trust_x_forwarded_proto: "{{ pretix_config_trust_x_forwarded_proto }}"
+  currency: "{{ pretix_config_currency }}"
+
+pretix_database_config:
+  backend: "{{ pretix_config_database_backend }}"
+  name: "{{ pretix_config_database_name }}"
+  user: "{{ pretix_config_database_user }}"
+  password: "{{ pretix_config_database_password }}"
+  host: "{{ pretix_config_database_host }}"
+
+pretix_mail_minimal_config:
+  host: "{{ pretix_config_mail_host }}"
+  from: "{{ pretix_config_mail_from }}"
+pretix_mail_config: >-2
+  {{ pretix_mail_minimal_config
+    | combine({'user': pretix_config_mail_user} if pretix_config_mail_user else {})
+    | combine({'password': pretix_config_mail_password} if pretix_config_mail_password else {})
+    | combine({'ssl': pretix_config_mail_ssl | bool | ternary('on', 'off')} if pretix_config_mail_ssl else {})
+    | combine({'tls': pretix_config_mail_tls | bool | ternary('on', 'off')} if pretix_config_mail_tls else {})
+  }}
+
+pretix_redis_config:
+  location: "{{ pretix_config_redis_location }}"
+  sessions: "{{ pretix_config_redis_sessions | bool | ternary('true', 'false') }}"
+
+pretix_celery_config:
+  backend: "{{ pretix_config_celery_backend }}"
+  broker: "{{ pretix_config_celery_broker }}"
+
+pretix_config: {}
+pretix_default_config:
+  pretix: "{{ pretix_app_config }}"
+  database: "{{ pretix_database_config }}"
+  mail: "{{ pretix_mail_config }}"
+  redis: "{{ pretix_redis_config }}"
+  celery: "{{ pretix_celery_config }}"
+
+pretix_config_merged: >-2
+  {{ pretix_default_config | combine(pretix_config | default({}), recursive=True) }}
+
+pretix_config_file_content: |+2
+  {% for kv in (pretix_config_merged | dict2items) %}
+  [{{ kv.key }}]
+  {% for entry in ((kv.value | default({}, true)) | dict2items) %}
+  {{ entry.key }}={{ entry.value }}
+  {% endfor %}
+  {% endfor %}

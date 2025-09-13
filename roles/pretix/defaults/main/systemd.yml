@@ -1,0 +1,50 @@
+---
+pretix_systemd_unit_description: "pretix web service"
+pretix_systemd_unit_after: "network.target"
+pretix_systemd_unit_file_path: >-2
+  /etc/systemd/system/{{ pretix_systemd_service_name }}
+
+pretix_systemd_service_name: "pretix.service"
+pretix_systemd_service_user: "{{ pretix_user }}"
+pretix_systemd_service_group: "{{ pretix_user }}"
+pretix_systemd_service_environment:
+  VIRTUAL_ENV: "{{ pretix_virtualenv_dir }}"
+  PATH: "{{ pretix_virtualenv_dir }}/bin:/usr/local/bin:/usr/bin:/bin"
+pretix_systemd_service_working_directory: "{{ pretix_install_dir }}"
+pretix_systemd_service_exec_start: >-2
+  {{ pretix_virtualenv_dir }}/bin/gunicorn pretix.wsgi
+  --name {{ pretix_config_wsgi_name }}
+  --workers {{ pretix_config_wsgi_workers }}
+  --max-requests {{ pretix_config_wsgi_max_requests }}
+  --log-level={{ pretix_config_wsgi_log_level }}
+  --bind={{ pretix_config_wsgi_bind_addr }}
+pretix_systemd_service_restart: "on-failure"
+
+pretix_systemd_install_wanted_by: "multi-user.target"
+
+# pretix worker
+pretix_worker_systemd_service_name: "pretix-worker.service"
+pretix_worker_systemd_service_description: "pretix worker service"
+pretix_worker_systemd_unit_file_path: >-2
+  /etc/systemd/system/{{ pretix_worker_systemd_service_name }}
+pretix_worker_systemd_service_exec_start: >-2
+  {{ pretix_virtualenv_dir }}/bin/celery
+  -A pretix.celery_app worker
+  -l  {{ pretix_config_worker_log_level }}
+
+# pretix cron
+pretix_cron_systemd_service_name: "pretix-cron.service"
+pretix_cron_systemd_service_description: "pretix cron service"
+pretix_cron_systemd_unit_file_path: >-2
+  /etc/systemd/system/{{ pretix_cron_systemd_service_name }}
+pretix_cron_systemd_service_exec_start: >-2
+  python3 -m pretix runperiodic
+
+pretix_cron_systemd_timer_name: "pretix-cron.timer"
+pretix_cron_systemd_timer_description: "pretix cron timer"
+pretix_cron_systemd_timer_file_path: >-2
+  /etc/systemd/system/{{ pretix_cron_systemd_timer_name }}
+pretix_cron_systemd_timer_on_active_sec: 1800
+pretix_cron_systemd_timer_on_startup_sec: >-2
+  {{ pretix_cron_systemd_timer_on_active_sec }}
+pretix_cron_systemd_timer_accuracy_sec: 60

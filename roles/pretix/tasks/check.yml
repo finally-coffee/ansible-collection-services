@@ -1,0 +1,14 @@
+---
+- name: Ensure 'pretix_state' is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported pretix_state '{{ pretix_state }}'.
+      Supported states are {{ pretix_states | join(', ') }}
+  when: pretix_state not in pretix_states
+
+- name: Ensure 'pretix_deployment_method' is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Unsupported pretix_state '{{ pretix_deployment_method }}'.
+      Supported states are {{ pretix_deployment_methods | join(', ') }}
+  when: pretix_deployment_method not in pretix_deployment_methods

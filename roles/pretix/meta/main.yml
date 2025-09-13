@@ -1,0 +1,9 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: pretix
+  description: Ansible role to deploy pretix (https://pretix.eu)
+  galaxy_tags:
+    - pretix
+    - ticketing

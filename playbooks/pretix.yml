@@ -1,0 +1,99 @@
+---
+- import_playbook: finallycoffee.databases.postgresql_client
+  when: pretix_configure_postgresql | default(true)
+  vars:
+    postgresql_hosts: "{{ pretix_hosts | default('pretix') }}"
+    postgresql_become: >-2
+      {{ pretix_postgresql_client_become | default(pretix_become | default(true)) }}
+    postgresql_client_database: "{{ pretix_postgresql_database | default('pretix') }}"
+    postgresql_client_username: "{{ pretix_postgresql_user | default('pretix') }}"
+    postgresql_client_password: >-2
+      {{ pretix_postgresql_password | mandatory(msg='pretix postgresql password is required') }}
+
+- import_playbook: finallycoffee.databases.valkey
+  when: pretix_configure_valkey | default(true)
+  vars:
+    valkey_hosts: "{{ pretix_hosts | default('pretix') }}"
+    valkey_instance: "pretix"
+    valkey_secret: "{{ pretix_redis_secret | mandatory(msg='pretix valkey secret is required') }}"
+    valkey_config_user:
+      - "default on +@all -DEBUG ~* &* >{{ pretix_redis_secret }}"
+    valkey_container_ports:
+      - "{{ pretix_redis_bind_addr | default('127.0.10.1:6739') }}:{{ valkey_config_port }}"
+    valkey_config_bind:
+      - "0.0.0.0"
+      - "-::"
+
+- name: Install and configure pretix
+  hosts: "{{ pretix_hosts | default('pretix') }}"
+  become: "{{ pretix_become | default(true) }}"
+  gather_facts: "{{ pretix_gather_facts | default(false) }}"
+  roles:
+    - role: finallycoffee.services.pretix
+      vars:
+        pretix_config_url: "https://{{ pretix_domain }}"
+        pretix_config_database_name: "{{ pretix_postgresql_database | default('pretix') }}"
+        pretix_config_database_user: "{{ pretix_postgresql_user | default('pretix') }}"
+        pretix_config_database_password: "{{ pretix_postgresql_password }}"
+        pretix_config_redis_location: >-2
+          redis://:{{ pretix_redis_secret }}@{{ pretix_redis_bind_addr }}/0
+        pretix_config_celery_backend: >-2
+          redis://:{{ pretix_redis_secret }}@{{ pretix_redis_bind_addr }}/1
+        pretix_config_celery_broker: >-2
+          redis://:{{ pretix_redis_secret }}@{{ pretix_redis_bind_addr }}/2
+    - role: finallycoffee.base.nginx
+      when: pretix_configure_nginx | default(true)
+      vars:
+        nginx_container_name: "nginx-pretix"
+        nginx_container_labels: "{{ pretix_nginx_container_labels | default({}, true) }}"
+        nginx_config_file: "{{ nginx_base_path }}/nginx-pretix.conf"
+        nginx_config: |+
+          server {
+              listen 80 default_server;
+              server_name {{ pretix_domain }};
+              add_header Referrer-Policy same-origin;
+              add_header X-Content-Type-Options nosniff;
+              location / {
+                  proxy_pass http://{{ pretix_config_wsgi_bind_addr }};
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto https;
+                  proxy_set_header Host $http_host;
+              }
+              location /media/ {
+                  alias {{ pretix_media_dir }}/;
+                  expires 7d;
+                  access_log off;
+              }
+              location ^~ /media/cachedfiles {
+                  deny all;
+                  return 404;
+              }
+              location ^~ /media/invoices {
+                  deny all;
+                  return 404;
+              }
+              location /static/staticfiles.json {
+                  deny all;
+                  return 404;
+              }
+              location /static/CACHE/manifest.json {
+                  deny all;
+                  return 404;
+              }
+              location /static/ {
+                  alias {{ pretix_static_asset_dir }};
+                  access_log off;
+                  expires 365d;
+                  add_header Cache-Control "public";
+              }
+          }
+        pretix_python_version: >-2
+          python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}
+        pretix_static_asset_dir: >-2
+          {{ pretix_virtualenv_dir }}/lib/{{ pretix_python_version }}/site-packages/pretix/static.dist/
+        nginx_container_volumes:
+          - "{{ nginx_config_file }}:/etc/nginx/conf.d/nginx.conf:ro"
+          - "{{ pretix_media_dir }}:{{ pretix_media_dir }}:ro"
+          - "{{ pretix_static_asset_dir }}:{{ pretix_static_asset_dir }}:ro"
+  vars:
+    pretix_redis_bind_addr: "127.0.10.1:6739"
