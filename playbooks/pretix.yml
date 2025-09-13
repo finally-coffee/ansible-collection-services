@@ -1,0 +1,32 @@
+---
+- name: Install and configure pretix
+  hosts: "{{ pretix_hosts | default('pretix') }}"
+  become: "{{ pretix_become | default(true) }}"
+  gather_facts: "{{ pretix_gather_facts | default(false) }}"
+  roles:
+    - role: finallycoffee.databases.postgresql_client
+      vars:
+        postgresql_become: >-2
+          {{ pretix_postgresql_client_become | default(pretix_become | default(true)) }}
+        postgresql_client_database: "{{ pretix_postgresql_database }}"
+        postgresql_client_username: "{{ pretix_postgresql_user }}"
+        postgresql_client_password: "{{ pretix_postgresql_password }}"
+    - role: finallycoffee.databases.valkey
+      vars:
+        valkey_instance: "pretix"
+        valkey_secret: "{{ pretix_redis_secret }}"
+        valkey_config_user:
+          - "default on +@all -DEBUG ~* >{{ pretix_redis_secret }}"
+        valkey_container_ports:
+          - "{{ pretix_redis_bind_addr }}:{{ valkey_config_port }}"
+    - role: pretix
+      vars:
+        pretix_config_database_name: "{{ pretix_postgresql_database }}"
+        pretix_config_database_user: "{{ pretix_postgresql_user }}"
+        pretix_config_database_password: "{{ pretix_postgresql_password }}"
+  vars:
+    pretix_postgresql_user: "pretix"
+    pretix_postgresql_password: ~
+    pretix_postgresql_database: "pretix"
+    pretix_redis_secret: ~
+    pretix_redis_bind_addr: "127.0.10.1:6739"

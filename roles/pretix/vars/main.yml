@@ -1,0 +1,7 @@
+---
+pretix_states:
+  - "present"
+  - "absent"
+
+pretix_deployment_methods:
+  - "systemd"

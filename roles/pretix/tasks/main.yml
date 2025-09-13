@@ -1,0 +1,16 @@
+---
+- name: Ensure preconditions are met
+  ansible.builtin.include_tasks:
+    file: "check.yml"
+
+- name: Ensure deployment preparations are done
+  ansible.builtin.include_tasks:
+    file: "prepare.yml"
+
+- name: Ensure pretix is configured
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+
+- name: Ensure pretix is deployed
+  ansible.builtin.include_tasks:
+    file: "deploy.yml"

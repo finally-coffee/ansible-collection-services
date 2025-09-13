@@ -1,0 +1,64 @@
+---
+- name: Ensure virtualenv in {{ pretix_virtualenv_dir }} is present
+  ansible.builtin.pip:
+    name: "{{ pretix_virtualenv_packages + pretix_plugins }}"
+    state: "{{ pretix_virtualenv_state }}"
+    chdir: "{{ pretix_install_dir }}"
+    virtualenv: "{{ pretix_virtualenv_dir }}"
+    virtualenv_command: "{{ pretix_virtualenv_command | default(omit, true) }}"
+    virtualenv_site_packages: "{{ pretix_virtualenv_site_packages }}"
+  become: true
+  become_user: "{{ pretix_user }}"
+  register: pretix_virtualenv_info
+
+# TODO: determine to only do this on a) upgrades or b) initial deployis
+- name: Ensure pretix database migrations are run
+  ansible.builtin.command:
+    cmd: "{{ pretix_virtualenv_dir }}/bin/python -m pretix migrate"
+    chdir: "{{ pretix_install_dir }}"
+  environment:
+    VIRTUAL_ENV: "{{ pretix_virtualenv_dir }}"
+  become: true
+  become_user: "{{ pretix_user }}"
+  notify: pretix_restart
+  when:
+    - pretix_state == 'present'
+    - pretix_virtualenv_info.changed or pretix_config_file_info.changed
+
+# TODO: determine to only do this on a) upgrades or b) initial deployis
+- name: Ensure pretix static assets are built
+  ansible.builtin.command:
+    cmd: "{{ pretix_virtualenv_dir }}/bin/python -m pretix rebuild"
+    chdir: "{{ pretix_install_dir }}"
+  environment:
+    VIRTUAL_ENV: "{{ pretix_virtualenv_dir }}"
+  become: true
+  become_user: "{{ pretix_user }}"
+  notify: pretix_restart
+  when:
+    - pretix_state == 'present'
+    - pretix_virtualenv_info.changed or pretix_config_file_info.changed
+
+- name: Ensure pretix systemd service is enabled
+  ansible.builtin.systemd_service:
+    name: "{{ _service }}"
+    enabled: true
+  when: pretix_state == 'present'
+  loop:
+    - "{{ pretix_systemd_service_name }}"
+    - "{{ pretix_worker_systemd_service_name }}"
+    - "{{ pretix_cron_systemd_service_name }}"
+    - "{{ pretix_cron_systemd_timer_name }}"
+  loop_control:
+    loop_var: _service
+
+- name: Ensure pretix systemd service is {{ pretix_state }}
+  ansible.builtin.systemd_service:
+    name: "{{ _service }}"
+    state: "{{ (pretix_state == 'present') | ternary('started', 'stopped') }}"
+  loop:
+    - "{{ pretix_systemd_service_name }}"
+    - "{{ pretix_worker_systemd_service_name }}"
+    - "{{ pretix_cron_systemd_timer_name }}"
+  loop_control:
+    loop_var: _service

@@ -1,0 +1,29 @@
+---
+- name: Ensure pretix user '{{ pretix_user }}' is {{ pretix_state }}
+  ansible.builtin.user:
+    name: "{{ pretix_user }}"
+    state: "{{ pretix_state }}"
+    system: "{{ pretix_user_system }}"
+    create_home: "{{ pretix_user_create_home }}"
+  register: pretix_user_info
+
+- name: Ensure host directories are {{ pretix_state }}
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: "{{ item.owner | default(pretix_user_id) }}"
+    group: "{{ item.group | default(pretix_group_id) }}"
+    mode: "{{ item.mode | default('0750') }}"
+    state: "directory"
+  loop:
+    - path: "{{ pretix_config_dir }}"
+    - path: "{{ pretix_virtualenv_dir }}"
+    - path: "{{ pretix_data_dir }}"
+    - path: "{{ pretix_media_dir }}"
+  when: pretix_state == 'present'
+
+- name: Ensure deployment-type specific preparations for '{{ pretix_deployment_method }}' are run
+  ansible.builtin.include_tasks:
+    file: "prepare-{{ pretix_deployment_method }}.yml"
+  when:
+    - pretix_state == 'present'
+    - pretix_deployment_method in ['systemd']

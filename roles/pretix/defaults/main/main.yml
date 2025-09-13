@@ -1,0 +1,16 @@
+---
+pretix_version: "2025.7.1"
+pretix_state: "present"
+pretix_deployment_method: "systemd"
+
+pretix_config_file: "/etc/pretix/pretix.cfg"
+pretix_config_file_owner: "{{ pretix_user_id }}"
+pretix_config_file_group: "{{ pretix_group_id }}"
+pretix_config_file_mode: "0640"
+pretix_config_dir: "{{ pretix_config_file | dirname }}"
+pretix_install_dir: "/var/lib/pretix"
+pretix_virtualenv_dir: "{{ pretix_install_dir }}/virtualenv"
+pretix_data_dir: "{{ pretix_install_dir }}/data"
+pretix_media_dir: "{{ pretix_data_dir }}/media"
+
+pretix_plugins: []

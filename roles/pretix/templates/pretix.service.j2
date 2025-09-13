@@ -1,0 +1,16 @@
+[Unit]
+Description={{ pretix_systemd_unit_description }}
+After={{ pretix_systemd_unit_after }}
+
+[Service]
+User={{ pretix_systemd_service_user }}
+Group={{ pretix_systemd_service_group }}
+{% for kv in pretix_systemd_service_environment | dict2items %}
+Environment="{{ kv.key }}={{ kv.value }}"
+{% endfor %}
+WorkingDirectory={{ pretix_systemd_service_working_directory }}
+ExecStart={{ pretix_systemd_service_exec_start }}
+Restart={{ pretix_systemd_service_restart }}
+
+[Install]
+WantedBy={{ pretix_systemd_install_wanted_by }}
