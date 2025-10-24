@@ -14,6 +14,7 @@
   community.docker.docker_container:
     name: "{{ jellyfin_container_name }}"
     image: "{{ jellyfin_container_image_ref }}"
+    env: "{{ jellyfin_container_env | default(omit, true) }}"
     user: "{{ jellyfin_uid }}:{{ jellyfin_gid }}"
     labels: "{{ jellyfin_container_labels }}"
     volumes: "{{ jellyfin_container_volumes }}"
