@@ -10,6 +10,19 @@
     postgresql_client_password: >-2
       {{ pretix_postgresql_password | mandatory(msg='pretix postgresql password is required') }}
 
+- import_playbook: finallycoffee.base.lego_certificate
+  when: pretix_acquire_lego_certificate | default(false)
+  vars:
+    target_hosts: "pretix"
+    target_domains:
+      - "{{ pretix_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ pretix_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ pretix_dns_records }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_gather_facts: "{{ pretix_gather_facts | default(false) }}"
+
 - import_playbook: finallycoffee.databases.valkey
   when: pretix_configure_valkey | default(true)
   vars:
@@ -87,10 +100,10 @@
                   add_header Cache-Control "public";
               }
           }
-        pretix_python_version: >-2
+        pretix_detected_python_version: >-2
           python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}
         pretix_static_asset_dir: >-2
-          {{ pretix_virtualenv_dir }}/lib/{{ pretix_python_version }}/site-packages/pretix/static.dist/
+          {{ pretix_virtualenv_dir }}/lib/{{ pretix_python_version | default(pretix_detected_python_version) }}/site-packages/pretix/static.dist/
         nginx_container_volumes:
           - "{{ nginx_config_file }}:/etc/nginx/conf.d/nginx.conf:ro"
           - "{{ pretix_media_dir }}:{{ pretix_media_dir }}:ro"
