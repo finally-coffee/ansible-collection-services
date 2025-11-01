@@ -10,6 +10,19 @@
     postgresql_client_password: >-2
       {{ pretix_postgresql_password | mandatory(msg='pretix postgresql password is required') }}
 
+- import_playbook: finallycoffee.base.lego_certificate
+  when: pretix_acquire_lego_certificate | default(false)
+  vars:
+    target_hosts: "pretix"
+    target_domains:
+      - "{{ pretix_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ pretix_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ pretix_dns_records }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_gather_facts: false
+
 - import_playbook: finallycoffee.databases.valkey
   when: pretix_configure_valkey | default(true)
   vars:
