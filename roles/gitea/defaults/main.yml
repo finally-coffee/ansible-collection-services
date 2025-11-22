@@ -1,5 +1,5 @@
 ---
-gitea_version: "1.25.1"
+gitea_version: "1.25.2"
 gitea_user: git
 gitea_run_user: "{{ gitea_user }}"
 gitea_base_path: "/opt/gitea"
@@ -44,8 +44,8 @@ gitea_container_base_ports:
   - "127.0.0.1:{{ git_container_port_ssh }}:{{ git_container_port_ssh }}"
 
 gitea_container_base_env:
-  USER_UID: "{{ gitea_user_res.uid | default(gitea_user) }}"
-  USER_GID: "{{ gitea_user_res.group | default(gitea_user) }}"
+  USER_UID: "{{ gitea_user_res.uid | default(gitea_user) | string }}"
+  USER_GID: "{{ gitea_user_res.group | default(gitea_user) | string }}"
 
 gitea_container_base_labels:
   version: "{{ gitea_version }}"
