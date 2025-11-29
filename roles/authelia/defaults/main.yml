@@ -1,5 +1,5 @@
 ---
-authelia_version: "4.39.14"
+authelia_version: "4.39.15"
 authelia_user: authelia
 authelia_base_dir: /opt/authelia
 authelia_domain: authelia.example.org
@@ -31,8 +31,8 @@ authelia_container_image_ref: >-2
   {{ authelia_container_image }}:{{ authelia_container_image_tag | default(authelia_version, true) }}
 authelia_container_image_force_pull: "{{ authelia_container_image_tag | default(false, True) }}"
 authelia_container_env:
-  PUID: "{{ authelia_run_user }}"
-  PGID: "{{ authelia_run_group }}"
+  PUID: "{{ authelia_run_user | string }}"
+  PGID: "{{ authelia_run_group | string }}"
 authelia_container_labels: >-2
   {{ authelia_container_base_labels | combine(authelia_container_extra_labels) }}
 authelia_container_extra_labels: {}

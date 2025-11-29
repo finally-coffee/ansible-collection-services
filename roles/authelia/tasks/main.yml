@@ -28,7 +28,6 @@
     owner: "{{ item.owner | default(authelia_user) }}"
     group: "{{ item.group | default(authelia_user) }}"
     mode: "{{ item.mode | default('0750') }}"
-  when: item.path | default(false, true) | bool
   loop:
     - path: "{{ authelia_base_dir }}"
       mode: "0755"
