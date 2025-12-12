@@ -1,6 +1,6 @@
 ---
 snipe_it_user: snipeit
-snipe_it_version: "8.3.6"
+snipe_it_version: "8.3.7"
 snipe_it_domain: ~
 snipe_it_state: present
 snipe_it_deployment_method: docker
