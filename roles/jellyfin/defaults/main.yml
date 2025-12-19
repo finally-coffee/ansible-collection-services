@@ -1,6 +1,6 @@
 ---
 jellyfin_user: jellyfin
-jellyfin_version: "10.11.4"
+jellyfin_version: "10.11.5"
 jellyfin_state: present
 jellyfin_deployment_method: docker
 
