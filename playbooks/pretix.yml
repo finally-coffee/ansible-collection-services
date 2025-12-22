@@ -61,6 +61,7 @@
       vars:
         nginx_container_name: "nginx-pretix"
         nginx_container_labels: "{{ pretix_nginx_container_labels | default({}, true) }}"
+        nginx_container_ports: "{{ pretix_nginx_container_ports | default([], true) }}"
         nginx_config_file: "{{ nginx_base_path }}/nginx-pretix.conf"
         nginx_config: |+
           server {
