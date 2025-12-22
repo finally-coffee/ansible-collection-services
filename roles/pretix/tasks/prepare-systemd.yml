@@ -19,7 +19,7 @@
   when: ansible_facts['pkg_mgr'] == 'apt'
 
 # TODO: add pretix worker and cron
-- name: Ensure systemd unit {{ pretix_systemd_unit_name }} is {{ pretix_state }}
+- name: Ensure systemd unit {{ pretix_systemd_service_name }} is {{ pretix_state }}
   ansible.builtin.template:
     src: "pretix.service.j2"
     dest: "{{ pretix_systemd_unit_file_path }}"
@@ -27,7 +27,7 @@
   notify:
     - pretix_restart
 
-- name: Ensure systemd unit {{ pretix_worker_systemd_unit_name }} is {{ pretix_state }}
+- name: Ensure systemd unit {{ pretix_worker_systemd_service_name }} is {{ pretix_state }}
   ansible.builtin.template:
     src: "pretix.service.j2"
     dest: "{{ pretix_worker_systemd_unit_file_path }}"
