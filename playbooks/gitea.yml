@@ -1,0 +1,63 @@
+---
+- import_playbook: finallycoffee.databases.postgresql_client
+  when: gitea_configure_postgresql_client | default(true) | bool
+  vars:
+    postgresql_become: "{{ gitea_postgresql_client_become | default(true) }}"
+    postgresql_hosts: >-2
+      {{ gitea_postgresql_hosts | default(gitea_hosts | default('gitea')) }}
+    postgresql_client_username: "{{ gitea_database_user }}"
+    postgresql_client_password: "{{ gitea_database_pass }}"
+    postgresql_client_database: "{{ gitea_database_name }}"
+    postgresql_client_database_lc_collate: >-2
+      {{ gitea_postgresql_database_lc_collate | default('en_US.UTF-8') }}
+    postgresql_client_database_lc_ctype: >-2
+      {{ gitea_postgresql_database_lc_ctype | default('en_US.UTF-8') }}
+  tags:
+    - gitea-postgresql
+
+- import_playbook: finallycoffee.base.lego_certificate
+  when: gitea_configure_lego_rfc2136 | default(true) | bool
+  vars:
+    target_domains:
+      - "{{ gitea_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ gitea_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ gitea_dns_records }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_hosts: >-2
+      {{ gitea_lego_hosts | default(gitea_hosts | default('gitea')) }}
+    target_gather_facts: >-2
+      {{ gitea_gather_facts | default(false) | bool }}
+  tags:
+    - gitea-lego
+
+- name: Install and configure gitea
+  hosts: "{{ gitea_hosts | default('gitea') }}"
+  become: "{{ gitea_become | default(true, true) }}"
+  gather_facts: "{{ gitea_gather_facts | default(false) | bool }}"
+  pre_tasks:
+    - name: Ensure referenced docker container networks are present
+      community.docker.docker_network:
+        name: "{{ network.name }}"
+        state: "present"
+      loop: "{{ gitea_container_networks | default([]) }}"
+      loop_control:
+        loop_var: "network"
+        label: "{{ network.name }}"
+  roles:
+    - name: finallycoffee.services.gitea
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: gitea_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ gitea_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ gitea_host_bind_ip }}"
+    target_hosts: >-2
+      {{ gitea_caddy_hosts | default(gitea_hosts | default('gitea')) }}
+    target_become: >-2
+      {{ gitea_caddy_become | default(gitea_become | default(true, true)) }}
+    target_gather_facts: >-2
+      {{ gitea_caddy_gather_facts | default(false) }}
+  tags:
+    - gitea-caddy
