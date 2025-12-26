@@ -1,6 +1,60 @@
 ---
-- name: Install and configure hedgedoc
+- import_playbook: finallycoffee.databases.postgresql_client
+  when: hedgedoc_configure_postgresql_client | default(true) 
+  vars:
+    postgresql_hosts: >-2
+      {{ hedgedoc_postgresql_hosts | default(hedgedoc_hosts | default('hedgedoc')) }}
+    postgresql_become: >-2
+      {{ hedgedoc_postgresql_become | default(hedgedoc_become | default(true)) }}
+    postgresql_client_username: "{{ hedgedoc_database_user }}"
+    postgresql_client_password: "{{ hedgedoc_database_pass }}"
+    postgresql_client_database: "{{ hedgedoc_database_name }}"
+    postgresql_client_database_lc_collate: "en_US.UTF-8"
+    postgresql_client_database_lc_ctype: "en_US.UTF-8"
+  tags:
+    - hedgedoc
+    - hedgedoc-postgresql
+
+- import_playbook: finallycoffee.base.lego_certificate
+  when: hedgedoc_configure_lego_rfc2136 | default(true)
+  vars:
+    target_hosts: >-2
+      {{ hedgedoc_lego_hosts | default(hedgedoc_hosts | default('hedgedoc')) }}
+    target_gather_facts: >-2
+      {{ hedgedoc_lego_gather_facts | default(hedgedoc_gather_facts | default(false)) }}
+    target_become: >-2
+      {{ hedgedoc_lego_become | default(hedgedoc_become | default(true, false)) }}
+    target_domains:
+      - "{{ hedgedoc_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ hedgedoc_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ hedgedoc_dns_records }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+  tags:
+    - hedgedoc
+    - hedgedoc-lego
+
+- name: Deploy Hedgedoc
   hosts: "{{ hedgedoc_hosts | default('hedgedoc') }}"
   become: "{{ hedgedoc_become | default(true, false) }}"
+  gather_facts: "{{ hedgedoc_gather_facts | default(false) }}"
   roles:
     - role: finallycoffee.services.hedgedoc
+  tags:
+    - hedgedoc
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: hedgedoc_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ hedgedoc_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ hedgedoc_host_bind_ip }}"
+    target_hosts: >-2
+      {{ hedgedoc_caddy_hosts | default(hedgedoc_hosts | default('hedgedoc')) }}
+    target_become: >-2
+      {{ hedgedoc_caddy_become | default(hedgedoc_become | default(true, false)) }}
+    target_gather_facts: >-2
+      {{ hedgedoc_caddy_gather_facts | default(false) }}
+  tags:
+    - hedgedoc
+    - hedgedoc-caddy

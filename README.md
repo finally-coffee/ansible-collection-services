@@ -40,6 +40,11 @@ concise area of concern.
 - [`vouch_proxy`](roles/vouch_proxy/README.md): Deploys [vouch-proxy](https://github.com/vouch/vouch-proxy),
   an authorization proxy for arbitrary webapps working with `nginx`s' `auth_request` module.
 
+## Playbooks
+
+- [`hedgedoc`](playbooks/hedgedoc.md)
+- [`gitea`](playbooks/gitea.md)
+
 ## License
 
 [CNPLv7+](LICENSE.md): Cooperative Nonviolent Public License
