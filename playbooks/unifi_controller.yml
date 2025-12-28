@@ -12,6 +12,9 @@
     target_dns_server: "{{ dns_server }}"
     target_dns_additional_records: "{{ unifi_controller_dns_records | default([]) }}"
     target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+  tags:
+    - unifi-controller
+    - unifi-controller-lego
 
 - name: Deploy unifi controller
   hosts: "{{ unifi_controller_hosts | default('unifi_controller') }}"
@@ -19,3 +22,22 @@
   gather_facts: "{{ unifi_controller_gather_facts | default(false) }}"
   roles:
     - role: finallycoffee.services.unifi_controller
+  tags:
+    - unifi-controller
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: unifi_controller_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ unifi_controller_domain }}"
+    caddy_reverse_proxy_backend_addr: "https://{{ unifi_controller_bind_addr }}"
+    caddy_reverse_proxy_extra_config: >-2
+      {{ unifi_controller_caddy_reverse_proxy_extra_config | default('', true) }}
+    target_hosts: >-2
+      {{ unifi_controller_caddy_hosts | default(unifi_controller_hosts | default('unifi_controller')) }}
+    target_become: >-2
+      {{ unifi_controller_caddy_become | default(unifi_controller_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ unifi_controller_caddy_gather_facts | default(false) }}
+  tags:
+    - unifi-controller
+    - unifi-controller-caddy
