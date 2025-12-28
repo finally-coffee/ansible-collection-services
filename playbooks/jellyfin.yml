@@ -1,6 +1,44 @@
 ---
-- name: Install and configure jellyfin
+- import_playbook: finallycoffee.base.lego_certificate
+  when: jellyfin_configure_lego_rfc2136 | default(false)
+  vars:
+    target_domains:
+      - "{{ jellyfin_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ jellyfin_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_dns_additional_records: "{{ jellyfin_dns_records }}"
+    target_hosts: >-2
+      {{ jelllyfin_lego_hosts | default(jellyfin_hosts | default('jellyfin')) }}
+    target_become: >-2
+      {{ jellyfin_lego_become | default(jellyfin_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ jellyfin_lego_gather_facts | default(false) }}
+  tags:
+    - jellyfin
+    - jellyfin-lego
+
+- name: Install jellyfin, a selfhosted media streaming platform
   hosts: "{{ jellyfin_hosts | default('jellyfin') }}"
-  become: "{{ jellyfin_become | default(true, false) }}"
+  become: "{{ jellyfin_become | default(false) }}"
+  gather_facts: "{{ jellyfin_gather_facts | default(false) }}"
   roles:
     - role: finallycoffee.services.jellyfin
+  tags:
+    - jellyfin
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: jellyfin_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ jellyfin_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ jellyfin_host_bind_ip }}"
+    target_hosts: >-2
+      {{ jellyfin_caddy_hosts | default(jellyfin_hosts | default('jellyfin')) }}
+    target_become: >-2
+      {{ jellyfin_caddy_become | default(jellyfin_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ jellyfin_caddy_gather_facts | default(false) }}
+  tags:
+    - jellyfin
+    - jellyfin-caddy

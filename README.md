@@ -43,6 +43,7 @@ concise area of concern.
 ## Playbooks
 
 - [`hedgedoc`](playbooks/hedgedoc.md)
+- [`jellyfin`](playbooks/jellyfin.md)
 - [`gitea`](playbooks/gitea.md)
 - [`vaultwarden`](playbooks/vaultwarden.md)
 
