@@ -1,7 +1,44 @@
 ---
+- import_playbook: finallycoffee.base.lego_certificate
+  when: phpldapadmin_configure_lego_rfc2136 | default(false)
+  vars:
+    target_domains:
+      - "{{ phpldapadmin_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ phpldapadmin_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_dns_additional_records: "{{ phpldapadmin_dns_records }}"
+    target_hosts: >-2
+      {{ phpldapadmin_lego_hosts | default(phpldapadmin_hosts | default('phpldapadmin')) }}
+    target_become: >-2
+      {{ phpldapadmin_lego_become | default(phpldapadmin_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ phpldapadmin_lego_gather_facts | default(false) }}
+  tags:
+    - phpldapadmin
+    - phpldapadmin-lego
+
 - name: Configure and run phpldapadmin
   hosts: "{{ phpldapadmin_hosts | default('phpldapadmin', true) }}"
   become: "{{ phpldapadmin_become | default(false) }}"
   gather_facts: "{{ phpldapadmin_gather_facts | default(false) }}"
   roles:
     - role: finallycoffee.services.phpldapadmin
+  tags:
+    - phpldapadmin
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: phpldapadmin_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ phpldapadmin_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ phpldapadmin_host_bind_ip }}"
+    target_hosts: >-2
+      {{ phpldapadmin_caddy_hosts | default(phpldapadmin_hosts | default('phpldapadmin')) }}
+    target_become: >-2
+      {{ phpldapadmin_caddy_become | default(phpldapadmin_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ phpldapadmin_caddy_gather_facts | default(false) }}
+  tags:
+    - phpldapadmin
+    - phpldapadmin-caddy
