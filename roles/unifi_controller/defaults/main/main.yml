@@ -1,5 +1,5 @@
 ---
-unifi_controller_version: "9.5.21"
+unifi_controller_version: "10.0.162"
 unifi_controller_base_path: "/var/lib/unifi-controller"
 unifi_controller_log_path: "{{ unifi_controller_base_path }}/log"
 unifi_controller_data_path: "{{ unifi_controller_base_path }}/data"
