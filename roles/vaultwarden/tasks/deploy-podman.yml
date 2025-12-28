@@ -5,6 +5,10 @@
     state: "{{ vaultwarden_state }}"
     pull: "{{ (vaultwarden_container_image_source == 'pull') | bool }}"
     force: "{{ vaultwarden_container_image_force_source }}"
+  register: vaultwarden_container_image_info
+  until: vaultwarden_container_image_info is success
+  retries: 10
+  delay: 3
 
 - name: Ensure container '{{ vaultwarden_container_name }}' is {{ vaultwarden_container_state }}
   containers.podman.podman_container:
