@@ -44,6 +44,7 @@ concise area of concern.
 
 - [`hedgedoc`](playbooks/hedgedoc.md)
 - [`gitea`](playbooks/gitea.md)
+- [`vaultwarden`](playbooks/vaultwarden.md)
 
 ## License
 

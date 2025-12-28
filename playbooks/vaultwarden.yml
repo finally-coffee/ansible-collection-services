@@ -1,6 +1,53 @@
 ---
+- import_playbook: finallycoffee.base.lego_certificate
+  when: vaultwarden_configure_lego_rfc2136 | default(false)
+  vars:
+    target_domains: "{{ vaultwarden_lego_cert_domains }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ vaultwarden_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_dns_additional_records: "{{ vaultwarden_dns_records }}"
+    target_hosts: >-2
+      {{ vaultwarden_lego_hosts | default(vaultwarden_hosts | default('vaultwarden')) }}
+    target_become: >-2
+      {{ vaultwarden_lego_become | default(vaultwarden_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ vaultwarden_lego_gather_facts | default(false) }}
+  tags:
+    - vaultwarden
+    - vaultwarden-lego
+
 - name: Install and configure vaultwarden
   hosts: "{{ vaultwarden_hosts | default('vaultwarden') }}"
-  become: "{{ vaultwarden_become | default(true, false) }}"
+  become: "{{ vaultwarden_become | default(false) }}"
+  gather_facts: "{{ vaultwarden_gather_facts | default(false) }}"
+  pre_tasks:
+    - name: Ensure host directories are created
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0750
+      loop:
+        - "{{ vaultwarden_base_dir }}"
+        - "{{ vaultwarden_config_dir }}"
+      when: vaultwarden_state == 'present'
   roles:
     - role: finallycoffee.services.vaultwarden
+  tags:
+    - vaultwarden
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: vaultwarden_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ vaultwarden_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ vaultwarden_host_bind_ip }}"
+    target_hosts: >-2
+      {{ vaultwarden_caddy_hosts | default(vaultwarden_hosts | default('vaultwarden')) }}
+    target_become: >-2
+      {{ vaultwarden_caddy_become | default(vaultwarden_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ vaultwarden_caddy_gather_facts | default(false) }}
+  tags:
+    - vaultwarden
+    - vaultwarden-caddy
