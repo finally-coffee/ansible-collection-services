@@ -44,6 +44,7 @@ concise area of concern.
 
 - [`hedgedoc`](playbooks/hedgedoc.md)
 - [`jellyfin`](playbooks/jellyfin.md)
+- [`keycloak`](playbooks/keycloak.md)
 - [`gitea`](playbooks/gitea.md)
 - [`phpldapadmin`](playbooks/phpldapadmin.md)
 - [`vaultwarden`](playbooks/vaultwarden.md)

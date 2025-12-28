@@ -1,0 +1,66 @@
+---
+- import_playbook: finallycoffee.databases.postgresql_client
+  when: keycloak_configure_postgresql_client | default(false)
+  vars:
+    postgresql_hosts: >-2
+      {{ keycloak_postgresql_client_host | default(keycloak_hosts | default('keycloak')) }}
+    postgresql_become: >-2
+      {{ keycloak_postgresql_client_become | default(keycloak_become | default(false)) }}
+    postgresql_client_username: "{{ keycloak_database_username }}"
+    postgresql_client_password: "{{ keycloak_database_password }}"
+    postgresql_client_database: "{{ keycloak_database_database }}"
+    postgresql_client_database_lc_ctype: 'C'
+    postgresql_client_database_lc_collate: 'C'
+    postgresql_client_database_contype: host
+    postgresql_client_address: "172.17.0.0/24"
+  tags:
+    - keycloak
+    - keycloak-postgresql
+
+- import_playbook: finallycoffee.base.lego_certificate
+  when: keycloak_configure_lego_rfc2136 | default(true) | bool
+  vars:
+    target_domains:
+      - "{{ keycloak_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ keycloak_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_additional_records: "{{ keycloak_dns_records }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_hosts: >-2
+      {{ keycloak_lego_hosts | default(keycloak_hosts | default('keycloak')) }}
+    target_become: >-2
+      {{ keycloak_lego_become | default(keycloak_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ keycloak_lego_gather_facts | default(false) | bool }}
+  tags:
+    - keycloak
+    - keycloak-lego
+
+- name: Set up and configure keycloak
+  hosts: "{{ keycloak_hosts | default('keycloak') }}"
+  become: "{{ keycloak_become | default(false) }}"
+  gather_facts: "{{ keycloak_gather_facts | default(false) }}"
+  roles:
+    - role: finallycoffee.services.keycloak
+  tags:
+    - keycloak
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: keycloak_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ keycloak_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ keycloak_host_bind_ip }}"
+    caddy_reverse_proxy_template_block: >-2
+      {{ keycloak_caddy_reverse_proxy_template_block | default(true, false) }}
+    caddy_reverse_proxy_block: >-2
+      {{ keycloak_caddy_reverse_proxy_block | default('') }}
+    target_hosts: >-2
+      {{ keycloak_caddy_hosts | default(keycloak_hosts | default('keycloak')) }}
+    target_become: >-2
+      {{ keycloak_caddy_become | default(keycloak_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ keycloak_caddy_gather_facts | default(false) }}
+  tags:
+    - keycloak
+    - keycloak-caddy
