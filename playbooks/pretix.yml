@@ -113,3 +113,17 @@
           - "{{ pretix_static_asset_dir }}:{{ pretix_static_asset_dir }}:ro"
   vars:
     pretix_redis_bind_addr: "127.0.10.1:6739"
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: pretix_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ pretix_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ pretix_host_bind_addr }}"
+    target_hosts: >-2
+      {{ pretix_caddy_hosts | default(pretix_hosts | default('pretix')) }}
+    target_become: >-2
+      {{ pretix_caddy_become | default(pretix_become | default(true, true)) }}
+    target_gather_facts: >-2
+      {{ pretix_caddy_gather_facts | default(false) }}
+  tags:
+    - pretix-caddy
