@@ -10,7 +10,7 @@
     target_dns_tsig_key: "{{ dns_tsig_keydata }}"
     target_dns_additional_records: "{{ jellyfin_dns_records }}"
     target_hosts: >-2
-      {{ jelllyfin_lego_hosts | default(jellyfin_hosts | default('jellyfin')) }}
+      {{ jellyfin_lego_hosts | default(jellyfin_hosts | default('jellyfin')) }}
     target_become: >-2
       {{ jellyfin_lego_become | default(jellyfin_become | default(false)) }}
     target_gather_facts: >-2
