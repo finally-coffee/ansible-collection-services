@@ -48,6 +48,7 @@ concise area of concern.
 - [`keycloak`](playbooks/keycloak.md)
 - [`gitea`](playbooks/gitea.md)
 - [`phpldapadmin`](playbooks/phpldapadmin.md)
+- [`snipe_it`](playbooks/snipe_it.md)
 - [`vaultwarden`](playbooks/vaultwarden.md)
 
 ## License

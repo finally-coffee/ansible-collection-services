@@ -1,6 +1,58 @@
 ---
-- name: Install and configure Snipe-IT
+- import_playbook: finallycoffee.base.lego_certificate
+  when: snipe_it_configure_lego_rfc2136 | default(false)
+  vars:
+    target_domains:
+      - "{{ snipe_it_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ snipe_it_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_dns_additional_records: "{{ snipe_it_dns_records }}"
+    target_hosts: >-2
+      {{ snipe_it_lego_hosts | default(snipe_it_hosts | default('snipe_it')) }}
+    target_become: >-2
+      {{ snipe_it_lego_become | default(snipe_it_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ snipe_it_lego_gather_facts | default(false) }}
+  tags:
+    - snipe-it
+    - snipe-it-lego
+
+- name: Set up snipe-it, an asset management system
   hosts: "{{ snipe_it_hosts | default('snipe_it') }}"
-  become: "{{ snipe_it_become | default(true, false) }}"
+  become: "{{ snipe_it_become | default(false) }}"
   roles:
+    - role: finallycoffee.databases.mariadb
+      when: snipe_it_configure_mariadb | default(true, true)
+      vars:
+        mariadb_root_password: "{{ snipe_it_builtin_database_root_pass }}"
+        mariadb_database: "{{ snipe_it_config_db_database }}"
+        mariadb_username: "{{ snipe_it_config_db_username }}"
+        mariadb_password: "{{ snipe_it_config_db_password }}"
+        mariadb_container_name: "snipe-it-mysql"
+        mariadb_container_ports: "{{ snipe_it_builtin_database_container_ports }}"
+        mariadb_base_path: "/databases/snipe-it/mariadb"
+      tags:
+        - snipe-it
+        - snipe-it-mariadb
     - role: finallycoffee.services.snipe_it
+      tags:
+        - snipe-it
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: snipe_it_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ snipe_it_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ snipe_it_host_bind_addr }}"
+    caddy_reverse_proxy_extra_config: >-2
+      {{ snipe_it_caddy_reverse_proxy_extra_config | default('') }}
+    target_hosts: >-2
+      {{ snipe_it_caddy_hosts | default(snipe_it_hosts | default('snipe_it')) }}
+    target_become: >-2
+      {{ snipe_it_caddy_become | default(snipe_it_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ snipe_it_caddy_gather_facts | default(false) }}
+  tags:
+    - snipe-it
+    - snipe-it-caddy
