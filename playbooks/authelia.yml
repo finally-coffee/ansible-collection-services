@@ -1,0 +1,114 @@
+---
+- import_playbook: finallycoffee.databases.postgresql_client
+  when: authelia_configure_postgresql_client | default(false)
+  vars:
+    postgresql_hosts: >-2
+      {{ authelia_postgresql_hosts | default(authelia_hosts | default('authelia')) }}
+    postgresql_become: >-2
+      {{ authelia_postgresql_become | default(authelia_become | default(false)) }}
+    postgresql_client_username: "{{ authelia_database_user }}"
+    postgresql_client_password: "{{ authelia_database_pass }}"
+    postgresql_client_database: "{{ authelia_database_name }}"
+    postgresql_client_database_lc_ctype: 'C'
+    postgresql_client_database_lc_collate: 'C'
+  tags:
+    - authelia
+    - authelia-postgresql-client
+
+- import_playbook: finallycoffee.base.lego_certificate
+  when: authelia_configure_lego_rfc2136 | default(false)
+  vars:
+    target_domains:
+      - "{{ authelia_domain }}"
+    target_acme_zone: "{{ acme_domain }}"
+    target_acme_account_email: "{{ authelia_lego_acme_account_email }}"
+    target_dns_server: "{{ dns_server }}"
+    target_dns_tsig_key: "{{ dns_tsig_keydata }}"
+    target_dns_additional_records: "{{ authelia_dns_records }}"
+    target_hosts: >-2
+      {{ authelia_lego_hosts | default(authelia_hosts | default('authelia')) }}
+    target_become: >-2
+      {{ authelia_lego_become | default(authelia_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ authelia_lego_gather_facts | default(false) }}
+  tags:
+    - authelia
+    - authelia-lego
+
+- name: Install and configure authelia
+  hosts: "{{ authelia_hosts | default('authelia') }}"
+  become: "{{ authelia_become | default(false) }}"
+  gather_facts: "{{ authelia_gather_facts | default(false) }}"
+  pre_tasks:
+    - name: Ensure valkey user exists
+      ansible.builtin.user:
+        name: "{{ valkey_user }}"
+        state: present
+        system: true
+        create_home: false
+      register: valkey_user_info
+      when: valkey_state == 'present'
+      tags:
+        - authelia
+        - authelia-valkey
+    - name: Create host folder for valkey unix socket
+      ansible.builtin.file:
+        path: "{{ authelia_redis_unix_socket }}"
+        state: directory
+        mode: "0755"
+        owner: "{{ valkey_user_info.uid | default(valkey_user) }}"
+        group: "{{ valkey_user_info.group | default(valkey_user) }}"
+      when: valkey_state == 'present'
+      tags:
+        - authelia
+        - authelia-valkey
+  roles:
+    - name: finallycoffee.databases.valkey
+      vars:
+        valkey_secret: "{{ authelia_redis_pass }}"
+        valkey_config_user:
+          - "default on +@all -DEBUG ~* >{{ valkey_secret }}"
+        valkey_config_unixsocketperm: 666
+        valkey_container_networks: []
+        valkey_container_purge_networks: true
+        valkey_container_volumes:
+          - "{{ authelia_redis_unix_socket }}:{{ authelia_redis_unix_socket }}"
+        valkey_container_image_registry: "{{ nexus_docker_hub_domain }}"
+      tags:
+        - authelia
+        - authelia-valkey
+    - name: finallycoffee.services.authelia
+      vars:
+        authelia_redis_host: "{{ valkey_config_unixsocket }}"
+        authelia_redis_port: ~
+        authelia_container_extra_volumes:
+          - "{{ authelia_redis_unix_socket }}:{{ authelia_redis_unix_socket }}"
+          - "{{ authelia_postgres_unix_socket }}:{{ authelia_postgres_unix_socket }}"
+        authelia_container_ports:
+          - "{{ authelia_host_bind_ip }}:{{ authelia_container_listen_port }}"
+      tags:
+        - authelia
+  vars:
+    valkey_instance: >-2
+      {{ authelia_instance_name | default('authelia') }}
+    authelia_redis_unix_socket: >-2
+      {{ authelia_redis_unix_socket_path
+        | default('/var/run/redis-' + valkey_instance + '-socket', true) }}
+    valkey_config_unixsocket: >-2
+      {{ authelia_valkey_config_unixsocket
+        | default(authelia_redis_unix_socket + '/redis.sock') }}
+
+- import_playbook: finallycoffee.base.caddy_reverse_proxy
+  when: authelia_configure_caddy_reverse_proxy | default(false)
+  vars:
+    caddy_site_name: "{{ authelia_domain }}"
+    caddy_reverse_proxy_backend_addr: "http://{{ authelia_host_bind_ip }}"
+    target_hosts: >-2
+      {{ authelia_caddy_hosts | default(authelia_hosts | default('authelia')) }}
+    target_become: >-2
+      {{ authelia_caddy_become | default(authelia_become | default(false)) }}
+    target_gather_facts: >-2
+      {{ authelia_caddy_gather_facts | default(false) }}
+  tags:
+    - authelia
+    - authelia-caddy

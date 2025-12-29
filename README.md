@@ -42,6 +42,7 @@ concise area of concern.
 
 ## Playbooks
 
+- [`authelia`](playbooks/authelia.md)
 - [`hedgedoc`](playbooks/hedgedoc.md)
 - [`jellyfin`](playbooks/jellyfin.md)
 - [`keycloak`](playbooks/keycloak.md)
