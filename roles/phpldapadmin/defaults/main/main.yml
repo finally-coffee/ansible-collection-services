@@ -1,5 +1,5 @@
 ---
-phpldapadmin_version: "2.3.7"
+phpldapadmin_version: "2.3.8"
 
 phpldapadmin_state: present
 phpldapadmin_deployment_method: docker
