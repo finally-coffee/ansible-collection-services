@@ -12,7 +12,8 @@
     postgresql_client_database_lc_ctype: 'C'
     postgresql_client_database_lc_collate: 'C'
     postgresql_client_database_contype: host
-    postgresql_client_address: "172.17.0.0/24"
+    postgresql_client_address: >-2
+      {{ keycloak_postgresql_client_address | default('172.17.0.0/24') }}
   tags:
     - keycloak
     - keycloak-postgresql
