@@ -22,16 +22,6 @@
   hosts: "{{ vaultwarden_hosts | default('vaultwarden') }}"
   become: "{{ vaultwarden_become | default(false) }}"
   gather_facts: "{{ vaultwarden_gather_facts | default(false) }}"
-  pre_tasks:
-    - name: Ensure host directories are created
-      file:
-        path: "{{ item }}"
-        state: directory
-        mode: 0750
-      loop:
-        - "{{ vaultwarden_base_dir }}"
-        - "{{ vaultwarden_config_dir }}"
-      when: vaultwarden_state == 'present'
   roles:
     - role: finallycoffee.services.vaultwarden
   tags:
