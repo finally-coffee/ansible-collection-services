@@ -6,10 +6,11 @@ authors:
 - transcaffeine <transcaffeine@finally.coffee>
 description: Various ansible roles useful for automating infrastructure
 dependencies:
-  "community.general": "^11.0.0"
-  "community.crypto": "^3.0.3"
-  "community.docker": "^4.7.0"
-  "containers.podman": "^1.16.0"
+  "community.general": ">=11.0.0"
+  "community.crypto": ">=3.0.3"
+  "community.docker": ">=4.7.0"
+  "containers.podman": ">=1.16.0"
+  "finallycoffee.base": ">=0.3.0"
 license_file: LICENSE.md
 build_ignore:
 - '*.tar.gz'
