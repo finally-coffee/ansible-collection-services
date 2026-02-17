@@ -1,6 +1,6 @@
 ---
 ghost_domain: ~
-ghost_version: "6.16.1"
+ghost_version: "6.19.1"
 ghost_user: ghost
 ghost_user_group: ghost
 ghost_base_path: /opt/ghost
