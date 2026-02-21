@@ -48,11 +48,22 @@
   roles:
     - name: finallycoffee.services.gitea
 
+- import_playbook: finallycoffee.services.anubis
+  when: gitea_configure_anubis | default(false)
+  vars:
+    anubis_hosts: "{{ gitea_hosts | default('gitea') }}"
+    anubis_become: "{{ gitea_become | default(true, true) }}"
+    anubis_gather_facts: "{{ gitea_gather_facts | default(false) }}"
+    anubis_config_target: "http://{{ gitea_host_bind_ip }}"
+    anubis_config_bind: "{{ gitea_anubis_config_bind_ip }}"
+
 - import_playbook: finallycoffee.base.caddy_reverse_proxy
   when: gitea_configure_caddy_reverse_proxy | default(false)
   vars:
     caddy_site_name: "{{ gitea_domain }}"
-    caddy_reverse_proxy_backend_addr: "http://{{ gitea_host_bind_ip }}"
+    caddy_reverse_proxy_backend_addr: >-2
+      http://{{ gitea_configure_anubis | default(false)
+        | ternary(gitea_anubis_config_bind_ip, gitea_host_bind_ip) }}
     target_hosts: >-2
       {{ gitea_caddy_hosts | default(gitea_hosts | default('gitea')) }}
     target_become: >-2
