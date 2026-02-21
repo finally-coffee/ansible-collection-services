@@ -1,0 +1,10 @@
+---
+- name: Ensure systemd service {{ anubis_systemd_service }} is enabled
+  ansible.builtin.systemd_service:
+    name: "{{ anubis_systemd_service }}"
+    enabled: "{{ anubis_systemd_service_enabled }}"
+
+- name: Ensure systemd service {{ anubis_systemd_service }} is {{ anubis_systemd_service_state }}
+  ansible.builtin.systemd_service:
+    name: "{{ anubis_systemd_service }}"
+    state: "{{ anubis_systemd_service_state }}"

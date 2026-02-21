@@ -1,0 +1,32 @@
+---
+anubis_package_server: "https://github.com"
+anubis_package_namespace: "TecharoHQ"
+anubis_package_repository: "anubis"
+# https://github.com/TecharoHQ/anubis/releases/download/v1.25.0/anubis-1.25.0-linux-amd64.tar.gz
+anubis_package_url: >-2
+  {{
+    [
+      anubis_package_server,
+      anubis_package_namespace,
+      anubis_package_repository,
+      'releases/download',
+      'v' + anubis_version,
+      [
+        anubis_package_repository,
+        anubis_version,
+        anubis_os_name,
+        anubis_architecture
+      ] | flatten | join('-') + '.tar.gz'
+    ] | flatten | join('/')
+  }}
+anubis_tarball_path: "{{ anubis_base_path }}/anubis-{{ anubis_version }}.tar.gz"
+anubis_package_path: >-2
+  {{ anubis_bin_path }}/anubis-{{ anubis_version }}-{{ anubis_os_name }}-{{ anubis_architecture }}
+anubis_tarball_binary: >-2
+  {{ anubis_package_path }}/bin/anubis
+anubis_tarball_systemd_unit_path: >-2
+  {{ anubis_package_path }}/run/{{ anubis_systemd_template_service_name }}
+anubis_tarball_bot_policies: >-2
+  {{ anubis_package_path }}/doc/botPolicies.yaml
+anubis_tarball_default_config_file: >-2
+  {{ anubis_package_path }}/run/default.env

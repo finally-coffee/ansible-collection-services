@@ -1,0 +1,20 @@
+---
+anubis_config_dir: "{{ anubis_config_file | dirname }}"
+anubis_config_file: "/etc/anubis/{{ anubis_service }}.env"
+anubis_bot_policy_file: "{{ anubis_config_dir }}/{{ anubis_service }}.botPolicies.yaml"
+
+anubis_config_bind: "8923"
+anubis_config_metrics_bind: "[::1]:8240"
+anubis_config_difficulty: "4"
+anubis_config_policy_fname: "{{ anubis_bot_policy_file }}"
+anubis_config_target: ~
+
+anubis_default_config:
+  "BIND": "{{ anubis_config_bind }}"
+  "METRICS_BIND": "{{ anubis_config_metrics_bind }}"
+  "DIFFICULTY": "{{ anubis_config_difficulty }}"
+  "POLICY_FNAME": "{{ anubis_config_policy_fname }}"
+  "TARGET": "{{ anubis_config_target }}"
+anubis_config: {}
+anubis_merged_config: >-2
+  {{ anubis_default_config | combine(anubis_config | default({}, true)) }}

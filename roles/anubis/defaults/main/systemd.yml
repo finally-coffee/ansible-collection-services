@@ -1,0 +1,8 @@
+---
+anubis_systemd_service: "anubis@{{ anubis_service }}.service"
+anubis_systemd_template_service_name: "anubis@.service"
+anubis_systemd_unit_dir: "/etc/systemd/system"
+anubis_systemd_service_enabled: >-2
+  {{ anubis_state == 'present' }}
+anubis_systemd_service_state: >-2
+  {{ (anubis_state == 'present') | ternary('started', 'stopped') }}

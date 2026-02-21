@@ -1,0 +1,51 @@
+---
+- name: Download and install anubis@{{ anubis_version }}
+  when: anubis_state == 'present'
+  block:
+    - name: Download anubis tarball from {{ anubis_package_url }} to '{{ anubis_tarball_path }}'
+      ansible.builtin.get_url:
+        url: "{{ anubis_package_url }}"
+        url_username: "{{ anubis_package_server_username | default(omit) }}"
+        url_password: "{{ anubis_package_server_password | default(omit) }}"
+        dest: "{{ anubis_tarball_path }}"
+
+    - name: Create folder '{{ anubis_bin_path }}' to extract archive into
+      ansible.builtin.file:
+        dest: "{{ anubis_bin_path }}"
+        state: directory
+
+    - name: Uncompress release tarball into {{ anubis_bin_path }}
+      ansible.builtin.unarchive:
+        src: "{{ anubis_tarball_path }}"
+        dest: "{{ anubis_bin_path }}"
+        remote_src: true
+      ignore_errors: "{{ ansible_check_mode }}"
+
+    - name: Ensure anubis binary is installed
+      ansible.builtin.copy:
+        src: "{{ anubis_tarball_binary }}"
+        dest: "/usr/bin/anubis"
+        remote_src: true
+
+    - name: Install systemd unit
+      ansible.builtin.copy:
+        src: "{{ anubis_tarball_systemd_unit_path }}"
+        dest: "{{ anubis_systemd_unit_dir }}"
+        remote_src: true
+
+    - name: Ensure configuration folder '{{ anubis_config_dir }}' exists
+      ansible.builtin.file:
+        dest: "{{ anubis_config_dir }}"
+        state: "directory"
+
+    - name: Copy default configuration to {{ anubis_config_file }}
+      ansible.builtin.copy:
+        src: "{{ anubis_tarball_default_config_file }}"
+        dest: "{{ anubis_config_file }}"
+        remote_src: true
+
+    - name: Copy bot policy for service '{{ anubis_service }}' to {{ anubis_bot_policy_file }}
+      ansible.builtin.copy:
+        src: "{{ anubis_tarball_bot_policies }}"
+        dest: "{{ anubis_bot_policy_file }}"
+        remote_src: true

@@ -1,0 +1,18 @@
+---
+- name: Ensure 'anubis_config_target' is populated
+  ansible.builtin.fail:
+    msg: >-2
+      Variable 'anubis_config_target' must be populated!
+  when: anubis_config_target | ansible.builtin.type_debug == 'NoneType'
+
+- name: Configure anubis for service '{{ anubis_service }}'
+  ansible.builtin.lineinfile:
+    path: "{{ anubis_config_file }}"
+    line: "{{ config_entry.key }}={{ config_entry.value }}"
+    regexp: "^{{ config_entry.key }}="
+    state: present
+  when: anubis_state == 'present'
+  loop: "{{ anubis_merged_config | dict2items }}"
+  loop_control:
+    loop_var: "config_entry"
+    label: "{{ config_entry.key }}={{ config_entry.value }}"

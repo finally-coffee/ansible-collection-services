@@ -1,0 +1,4 @@
+---
+anubis_states:
+  - "present"
+  - "absent"

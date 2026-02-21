@@ -1,0 +1,33 @@
+---
+- name: Ensure 'anubis_state' is valid
+  ansible.builtin.fail:
+    msg: >-2
+      Invalid state '{{ anubis_state }}'! Supported
+      states are {{ anubis_states | join(', ') }}
+  when: anubis_state not in anubis_states
+
+- name: Ensure anubis user '{{ anubis_user }}' is {{ anubis_user_state }}
+  ansible.builtin.user:
+    name: "{{ anubis_user }}"
+    state: "{{ anubis_user_state }}"
+    system: "{{ anubis_user_system }}"
+    create_home: "{{ anubis_user_create_home }}"
+
+- name: Ensure anubis base path '{{ anubis_base_path }}' is {{ anubis_state }}
+  ansible.builtin.file:
+    path: "{{ anubis_base_path }}"
+    state: "directory"
+  when: anubis_state == 'present'
+
+- name: Ensure anubis is installed
+  ansible.builtin.include_tasks:
+    file: "install.yml" 
+
+- name: Ensure anubis is configured
+  ansible.builtin.include_tasks:
+    file: "configure.yml"
+  when: anubis_state == 'present'
+
+- name: Ensure anubis is deployed
+  ansible.builtin.include_tasks:
+    file: "deploy.yml"

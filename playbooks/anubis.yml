@@ -1,0 +1,7 @@
+---
+- name: Ensure anubis is installed and configured
+  hosts: "{{ anubis_hosts | default('anubis') }}"
+  gather_facts: "{{ anubis_gather_facts | default(false) }}"
+  become: "{{ anubis_become | default(false) }}"
+  roles:
+    - role: finallycoffee.services.anubis

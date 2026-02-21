@@ -1,0 +1,10 @@
+---
+allow_duplicates: true
+dependencies: []
+galaxy_info:
+  role_name: anubis
+  description: Ansible role to deploy anubis
+  galaxy_tags:
+    - anubis
+    - ai
+    - llm
