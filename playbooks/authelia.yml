@@ -14,6 +14,7 @@
   tags:
     - authelia
     - authelia-postgresql-client
+    - postgresql-client
 
 - import_playbook: finallycoffee.base.lego_certificate
   when: authelia_configure_lego_rfc2136 | default(false)
@@ -34,6 +35,7 @@
   tags:
     - authelia
     - authelia-lego
+    - lego
 
 - name: Install and configure authelia
   hosts: "{{ authelia_hosts | default('authelia') }}"
@@ -62,6 +64,7 @@
       tags:
         - authelia
         - authelia-valkey
+        - valkey
   roles:
     - name: finallycoffee.databases.valkey
       vars:
@@ -112,3 +115,4 @@
   tags:
     - authelia
     - authelia-caddy
+    - caddy
