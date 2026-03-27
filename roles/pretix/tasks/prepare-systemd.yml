@@ -13,7 +13,7 @@
   ansible.builtin.apt:
     name: "{{ package }}"
     state: "{{ pretix_state }}"
-  loop: "{{ pretix_packages[ansible_distribution | lower][ansible_distribution_major_version] }}"
+  loop: "{{ pretix_packages[ansible_facts['distribution'] | lower][ansible_facts['distribution_major_version']] }}"
   loop_control:
     loop_var: "package"
   when: ansible_facts['pkg_mgr'] == 'apt'
