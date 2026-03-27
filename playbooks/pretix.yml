@@ -113,7 +113,7 @@
               }
           }
         pretix_detected_python_version: >-2
-          python{{ ansible_python.version.major }}.{{ ansible_python.version.minor }}
+          python{{ ansible_facts['python'].version.major }}.{{ ansible_facts['python'].version.minor }}
         pretix_static_asset_dir: >-2
           {{ pretix_virtualenv_dir }}/lib/{{ pretix_python_version | default(pretix_detected_python_version) }}/site-packages/pretix/static.dist/
         nginx_container_volumes:
