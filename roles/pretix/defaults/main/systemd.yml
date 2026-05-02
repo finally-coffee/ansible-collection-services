@@ -44,7 +44,7 @@ pretix_cron_systemd_timer_name: "pretix-cron.timer"
 pretix_cron_systemd_timer_description: "pretix cron timer"
 pretix_cron_systemd_timer_file_path: >-2
   /etc/systemd/system/{{ pretix_cron_systemd_timer_name }}
-pretix_cron_systemd_timer_on_active_sec: 1800
+pretix_cron_systemd_timer_on_unit_active_sec: 1800
 pretix_cron_systemd_timer_on_startup_sec: >-2
-  {{ pretix_cron_systemd_timer_on_active_sec }}
+  {{ pretix_cron_systemd_timer_on_unit_active_sec }}
 pretix_cron_systemd_timer_accuracy_sec: 60
