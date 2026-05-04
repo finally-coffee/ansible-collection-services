@@ -1,5 +1,5 @@
 ---
-pretix_version: "2026.4.0"
+pretix_version: "2026.4.1"
 pretix_state: "present"
 pretix_deployment_method: "systemd"
 
