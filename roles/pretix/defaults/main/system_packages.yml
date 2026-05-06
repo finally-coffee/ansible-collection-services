@@ -20,3 +20,4 @@ pretix_debian_packages:
 pretix_packages:
   "debian":
     "12": "{{ pretix_debian_packages }}"
+    "13": "{{ pretix_debian_packages }}"
