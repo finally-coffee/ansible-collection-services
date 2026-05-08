@@ -32,6 +32,8 @@
   when: phpldapadmin_configure_caddy_reverse_proxy | default(false)
   vars:
     caddy_site_name: "{{ phpldapadmin_domain }}"
+    caddy_reverse_proxy_extra_config: >-2
+      header_up -X-Forwarded-Port
     caddy_reverse_proxy_backend_addr: "http://{{ phpldapadmin_host_bind_ip }}"
     target_hosts: >-2
       {{ phpldapadmin_caddy_hosts | default(phpldapadmin_hosts | default('phpldapadmin')) }}
