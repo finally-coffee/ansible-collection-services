@@ -1,5 +1,5 @@
 ---
-anubis_version: "1.25.0"
+anubis_version: "1.27.0"
 anubis_base_path: "/opt/anubis"
 anubis_bin_path: "{{ anubis_base_path }}/bin"
 anubis_state: "present"
